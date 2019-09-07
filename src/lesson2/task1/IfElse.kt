@@ -3,6 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -120,7 +121,21 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int{
+    var ans=0
+    if (kingX==rookX1 || kingY==rookY1){
+        if (kingX==rookX2 || kingY==rookY2 ){
+            ans=3
+        }else{
+            ans=1
+        }
+    }else{
+        if (kingX==rookX2 || kingY==rookY2 ){
+            ans=2
+        }
+    }
+    return ans
+}
 
 /**
  * Простая
@@ -136,7 +151,23 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int{
+    var ans=0
+    val x= abs(kingX-bishopX)
+    val y= abs(kingY-bishopY)
+    if (kingX==rookX || kingY==rookY){
+        if (x==y ){
+            ans=3
+        }else{
+            ans=1
+        }
+    }else{
+        if (x==y){
+            ans=2
+        }
+    }
+    return ans
+}
 
 /**
  * Простая
@@ -146,7 +177,25 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    var ans=-1
+    if (a+b>c && a+c>b && b+c>a){
+        val cosA:Double=(b*b+c*c-a*a)/(2*b*c)
+        val cosB:Double=(a*a+c*c-b*b)/(2*a*c)
+        val cosC:Double=(b*b+a*a-c*c)/(2*b*a)
+        if (cosA==0.0 || cosB==0.0 || cosC==0.0){
+            ans=1
+        }else{
+            if (cosA<0.0 || cosB<0.0 || cosC<0.0){
+                ans=2
+            }else{
+                ans=0
+            }
+        }
+    }
+    return ans
+
+}
 
 /**
  * Средняя
@@ -156,4 +205,36 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int{
+    val sp1:Int
+    val sp2:Int
+    val ep1:Int
+    val ep2:Int
+    val l:Int
+
+    if (a<b){
+        sp1=a
+        ep1=b
+    }else{
+        sp1=b
+        ep1=a
+    }
+
+    if (c<d){
+        sp2=c
+        ep2=d
+    }else{
+        sp2=d
+        ep2=c
+    }
+
+    when{
+        (sp1>=sp2) && (sp1<=ep2) && (ep1<=ep2) -> l=ep1-sp1
+        (sp1<sp2) && (ep1<=ep2) && (ep1>=sp2) -> l=ep1-sp2
+        (sp1>=sp2) && (sp1<=ep2) && (ep1>ep2) -> l=ep2-sp1
+        (sp1<sp2) && (ep1>ep2) -> l=ep2-sp2
+        else -> l=-1
+    }
+    return l
+
+}
