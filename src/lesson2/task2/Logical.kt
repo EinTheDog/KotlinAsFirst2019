@@ -115,11 +115,11 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean{
         hMax=r
     }
 
-    if (a<b && a<c){
+    if (a<=b && a<=c){
         bMin1=a
         if (b<c) bMin2=b else bMin2=c
     }else{
-        if (b<a && b<c){
+        if (b<a && b<=c){
             bMin1=b
             if (a<c) bMin2=a else bMin2=c
         }else{
