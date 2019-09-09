@@ -91,7 +91,17 @@ fun digitNumber(n: Int): Int{
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int= if (n<3) 1 else fib (n-1)+fib(n-2)
+fun fib(n: Int): Int{
+    var a=1
+    var b=1
+    var c:Int
+    for (i in 3..n){
+        c=b
+        b=a+b
+        a=c
+    }
+    return b
+}
 
 /**
  * Простая
@@ -237,6 +247,9 @@ fun sin(x: Double, eps: Double): Double{
     while (x1>=2*PI){
         x1-=2*PI
     }
+    while (x1<=-2*PI){
+        x1+=2*PI
+    }
 
     fun fact(n:Int):Double{
         var a=1.0
@@ -274,6 +287,10 @@ fun cos(x: Double, eps: Double): Double{
     while (x1>=2*PI){
         x1-=2*PI
     }
+    while (x1<=-2*PI){
+        x1+=2*PI
+    }
+
 
     fun fact(n:Int):Double{
         var a=1.0
@@ -450,7 +467,17 @@ fun fibSequenceDigit(n: Int): Int{
         return a
     }
 
-    fun fibo(n: Int): Int= if (n<3) 1 else fibo(n-1)+fibo(n-2)
+    fun fibo(n: Int): Int{
+        var a=1
+        var b=1
+        var c:Int
+        for (i in 3..n){
+            c=b
+            b=a+b
+            a=c
+        }
+        return b
+    }
 
     while (m<n){
         y=fibo(k)
