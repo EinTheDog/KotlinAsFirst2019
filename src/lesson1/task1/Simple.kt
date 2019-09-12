@@ -59,7 +59,7 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int = 3600*hours+60*minutes+seconds
+fun seconds(hours: Int, minutes: Int, seconds: Int): Int = 3600 * hours + 60 * minutes + seconds
 
 /**
  * Тривиальная
@@ -68,7 +68,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = 3600*hours+60*minutes
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = 4.445*0.01*(sagenes*48+arshins*16+vershoks)
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
+    4.445 * 0.01 * (sagenes * 48 + arshins * 16 + vershoks)
 
 /**
  * Тривиальная
@@ -76,13 +77,9 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = 4.445*0.
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
-    val d:Double=deg.toDouble()
-    val m:Double=min.toDouble()
-    val s:Double=sec.toDouble()
-    val ans:Double=(d+m/60+s/3600)*2* PI/360
-    return ans
-}
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double =
+    (deg + min.toDouble() / 60 + sec.toDouble() / 3600) * 2 * PI / 360
+
 
 /**
  * Тривиальная
@@ -93,8 +90,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double{
     val x3=x2-x1
     val y3=y2-y1
-    val l:Double= sqrt(x3*x3+y3*y3)
-    return l
+    return sqrt(x3*x3+y3*y3)
 }
 
 /**
@@ -114,10 +110,8 @@ fun thirdDigit(number: Int): Int = (number/100)%10
  */
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int{
     var h:Int=hoursArrive
-    val ans:Int
     if (hoursDepart>hoursArrive) h+=24
-    ans=(h-hoursDepart)*60+minutesArrive-minutesDepart
-    return ans
+    return (h-hoursDepart)*60+minutesArrive-minutesDepart
 }
 
 /**
@@ -129,8 +123,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double{
     val p=1+percent.toDouble()/100
-    val ans=initial*p*p*p
-    return ans
+    return initial*p*p*p
 }
 
 /**
@@ -140,9 +133,8 @@ fun accountInThreeYears(initial: Int, percent: Int): Double{
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
 fun numberRevert(number: Int): Int{
-    val x1:Int=number/100
-    val x3:Int=number%10
-    val x2:Int=number/10-x1*10
-    val ans:Int=x3*100+x2*10+x1
-    return ans
+    val x1=number/100
+    val x3=number%10
+    val x2=number/10-x1*10
+    return x3*100+x2*10+x1
 }
