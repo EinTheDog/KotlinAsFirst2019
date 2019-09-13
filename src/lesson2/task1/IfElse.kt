@@ -64,17 +64,17 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
+fun ageDescription(age: Int): String =
     if (age%100>4 && age%100<21){
-        return "$age лет"
+        "$age лет"
     }else{
         when {
-            age%10==1 -> return "$age год"
-            (age%10>1) && (age%10<5) -> return "$age года"
-            else -> return "$age лет"
+            age%10==1 -> "$age год"
+            (age%10>1) && (age%10<5) -> "$age года"
+            else -> "$age лет"
         }
     }
-}
+
 
 /**
  * Простая
@@ -88,23 +88,18 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val s1:Double=t1*v1
-    val s2:Double=t2*v2
-    val s3:Double=t3*v3
-    val s:Double=(s1+s2+s3)/2
-    var k=0
+    val s1=t1*v1
+    val s2=t2*v2
+    val s3=t3*v3
+    val s=(s1+s2+s3)/2
     val t:Double
     when {
-        (s>0) && (s<=s1) -> k=1
-        (s>s1) && (s<=s2+s1) -> k=2
-        s>s2+s1 -> k=3
+        (s>0) && (s<=s1) -> t = s / v1
+        (s>s1) && (s<=s2+s1) -> t = t1 + (s - s1) / v2
+        s>s2+s1 -> t=t1+t2+(s-s1-s2)/v3
+        else -> t=0.0
     }
-    when (k){
-        0-> t=0.0
-        1-> t=s/v1
-        2-> t=t1+ (s-s1)/v2
-        else -> t=t1+t2+(s-s1-s2)/v3
-    }
+
     return t
 }
 
@@ -123,17 +118,8 @@ fun whichRookThreatens(
     rookX2: Int, rookY2: Int
 ): Int{
     var ans=0
-    if (kingX==rookX1 || kingY==rookY1){
-        if (kingX==rookX2 || kingY==rookY2 ){
-            ans=3
-        }else{
-            ans=1
-        }
-    }else{
-        if (kingX==rookX2 || kingY==rookY2 ){
-            ans=2
-        }
-    }
+    if (kingX==rookX1 || kingY==rookY1) ans++
+    if (kingX==rookX2 || kingY==rookY2) ans+=2
     return ans
 }
 
@@ -155,17 +141,8 @@ fun rookOrBishopThreatens(
     var ans=0
     val x= abs(kingX-bishopX)
     val y= abs(kingY-bishopY)
-    if (kingX==rookX || kingY==rookY){
-        if (x==y ){
-            ans=3
-        }else{
-            ans=1
-        }
-    }else{
-        if (x==y){
-            ans=2
-        }
-    }
+    if (kingX==rookX || kingY==rookY) ans++
+    if (x==y) ans+=2
     return ans
 }
 
@@ -185,12 +162,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
         val cosC:Double=(b*b+a*a-c*c)/(2*b*a)
         if (cosA==0.0 || cosB==0.0 || cosC==0.0){
             ans=1
-        }else{
-            if (cosA<0.0 || cosB<0.0 || cosC<0.0){
+        }else if (cosA<0.0 || cosB<0.0 || cosC<0.0){
                 ans=2
-            }else{
-                ans=0
-            }
+        }else{
+            ans=0
         }
     }
     return ans
@@ -205,36 +180,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int{
-    val sp1:Int
-    val sp2:Int
-    val ep1:Int
-    val ep2:Int
-    val l:Int
-
-    if (a<b){
-        sp1=a
-        ep1=b
-    }else{
-        sp1=b
-        ep1=a
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int= when{
+        (a>=c) && (a<=d) && (b<=d) -> b-a
+        (a<c) && (b<=d) && (b>=c) -> b-c
+        (a>=c) && (a<=d) && (b>d) -> d-a
+        (a<c) && (b>d) -> d-c
+        else -> -1
     }
 
-    if (c<d){
-        sp2=c
-        ep2=d
-    }else{
-        sp2=d
-        ep2=c
-    }
-
-    when{
-        (sp1>=sp2) && (sp1<=ep2) && (ep1<=ep2) -> l=ep1-sp1
-        (sp1<sp2) && (ep1<=ep2) && (ep1>=sp2) -> l=ep1-sp2
-        (sp1>=sp2) && (sp1<=ep2) && (ep1>ep2) -> l=ep2-sp1
-        (sp1<sp2) && (ep1>ep2) -> l=ep2-sp2
-        else -> l=-1
-    }
-    return l
-
-}
