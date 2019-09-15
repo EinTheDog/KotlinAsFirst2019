@@ -65,12 +65,12 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String =
-    if (age%100>4 && age%100<21){
+    if (age % 100 in 5..20) {
         "$age лет"
-    }else{
+    } else {
         when {
-            age%10==1 -> "$age год"
-            (age%10>1) && (age%10<5) -> "$age года"
+            age % 10 == 1 -> "$age год"
+            (age % 10 > 1) && (age % 10 < 5) -> "$age года"
             else -> "$age лет"
         }
     }
@@ -88,16 +88,16 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val s1=t1*v1
-    val s2=t2*v2
-    val s3=t3*v3
-    val s=(s1+s2+s3)/2
-    val t:Double
-    when {
-        (s>0) && (s<=s1) -> t = s / v1
-        (s>s1) && (s<=s2+s1) -> t = t1 + (s - s1) / v2
-        s>s2+s1 -> t=t1+t2+(s-s1-s2)/v3
-        else -> t=0.0
+    val s1 = t1 * v1
+    val s2 = t2 * v2
+    val s3 = t3 * v3
+    val s = (s1 + s2 + s3) / 2
+    val t: Double
+    t = when {
+        (s > 0) && (s <= s1) -> s / v1
+        (s > s1) && (s <= s2 + s1) -> t1 + (s - s1) / v2
+        s > s2 + s1 -> t1 + t2 + (s - s1 - s2) / v3
+        else -> 0.0
     }
 
     return t
@@ -116,10 +116,10 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int{
-    var ans=0
-    if (kingX==rookX1 || kingY==rookY1) ans++
-    if (kingX==rookX2 || kingY==rookY2) ans+=2
+): Int {
+    var ans = 0
+    if (kingX == rookX1 || kingY == rookY1) ans++
+    if (kingX == rookX2 || kingY == rookY2) ans += 2
     return ans
 }
 
@@ -137,12 +137,12 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int{
-    var ans=0
-    val x= abs(kingX-bishopX)
-    val y= abs(kingY-bishopY)
-    if (kingX==rookX || kingY==rookY) ans++
-    if (x==y) ans+=2
+): Int {
+    var ans = 0
+    val x = abs(kingX - bishopX)
+    val y = abs(kingY - bishopY)
+    if (kingX == rookX || kingY == rookY) ans++
+    if (x == y) ans += 2
     return ans
 }
 
@@ -155,17 +155,17 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var ans=-1
-    if (a+b>c && a+c>b && b+c>a){
-        val cosA:Double=(b*b+c*c-a*a)/(2*b*c)
-        val cosB:Double=(a*a+c*c-b*b)/(2*a*c)
-        val cosC:Double=(b*b+a*a-c*c)/(2*b*a)
-        if (cosA==0.0 || cosB==0.0 || cosC==0.0){
-            ans=1
-        }else if (cosA<0.0 || cosB<0.0 || cosC<0.0){
-                ans=2
-        }else{
-            ans=0
+    var ans = -1
+    if (a + b > c && a + c > b && b + c > a) {
+        val cosA: Double = (b * b + c * c - a * a) / (2 * b * c)
+        val cosB: Double = (a * a + c * c - b * b) / (2 * a * c)
+        val cosC: Double = (b * b + a * a - c * c) / (2 * b * a)
+        ans = if (cosA == 0.0 || cosB == 0.0 || cosC == 0.0) {
+            1
+        } else if (cosA < 0.0 || cosB < 0.0 || cosC < 0.0) {
+            2
+        } else {
+            0
         }
     }
     return ans
@@ -180,11 +180,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int= when{
-        (a>=c) && (a<=d) && (b<=d) -> b-a
-        (a<c) && (b<=d) && (b>=c) -> b-c
-        (a>=c) && (a<=d) && (b>d) -> d-a
-        (a<c) && (b>d) -> d-c
-        else -> -1
-    }
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    (a >= c) && (a <= d) && (b <= d) -> b - a
+    (a < c) && (b <= d) && (b >= c) -> b - c
+    (a >= c) && (a <= d) && (b > d) -> d - a
+    (a < c) && (b > d) -> d - c
+    else -> -1
+}
 
