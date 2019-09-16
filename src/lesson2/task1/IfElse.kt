@@ -92,15 +92,12 @@ fun timeForHalfWay(
     val s2 = t2 * v2
     val s3 = t3 * v3
     val s = (s1 + s2 + s3) / 2
-    val t: Double
-    t = when {
+    return when {
         (s > 0) && (s <= s1) -> s / v1
         (s > s1) && (s <= s2 + s1) -> t1 + (s - s1) / v2
         s > s2 + s1 -> t1 + t2 + (s - s1 - s2) / v3
         else -> 0.0
     }
-
-    return t
 }
 
 /**
@@ -157,9 +154,9 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     var ans = -1
     if (a + b > c && a + c > b && b + c > a) {
-        val cosA: Double = (b * b + c * c - a * a) / (2 * b * c)
-        val cosB: Double = (a * a + c * c - b * b) / (2 * a * c)
-        val cosC: Double = (b * b + a * a - c * c) / (2 * b * a)
+        val cosA = (b * b + c * c - a * a) / (2 * b * c)
+        val cosB = (a * a + c * c - b * b) / (2 * a * c)
+        val cosC = (b * b + a * a - c * c) / (2 * b * a)
         ans = if (cosA == 0.0 || cosB == 0.0 || cosC == 0.0) {
             1
         } else if (cosA < 0.0 || cosB < 0.0 || cosC < 0.0) {

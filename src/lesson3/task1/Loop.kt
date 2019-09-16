@@ -94,7 +94,7 @@ fun fib(n: Int): Int {
     var b = 1
     for (i in 3..n) {
         val c = b
-        b = a + b
+        b += a
         a = c
     }
     return b
@@ -120,7 +120,7 @@ fun lcm(m: Int, n: Int): Int {
         }
     }
 
-    return min*max
+    return min * max
 }
 
 /**
@@ -160,7 +160,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     if (m % 2 == 0 && n % 2 == 0) {
         return false
     } else {
-        val min =min(m,n)
+        val min = min(m, n)
         for (i in 3..min step 2) {
             if (m % i == 0 && n % i == 0) return false
         }
@@ -198,7 +198,7 @@ fun collatzSteps(x: Int): Int {
     var y = x
     var k = 0
     while (y > 1) {
-        if (y % 2 == 0) y = y / 2 else y = y * 3 + 1
+        y = if (y % 2 == 0) y / 2 else y * 3 + 1
         k++
     }
     return k
@@ -214,7 +214,7 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    val x1 = x%(2*PI)
+    val x1 = x % (2 * PI)
 
     var ans = 0.0
     var k = 1
@@ -246,7 +246,7 @@ fun fact(n: Int): Double {
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
 fun cos(x: Double, eps: Double): Double {
-    val x1 = x%(2* PI)
+    val x1 = x % (2 * PI)
 
     var ans = 0.0
     var k = 0
@@ -272,7 +272,7 @@ fun revert(n: Int): Int {
     var m = 0
     while (n1 > 0) {
         m = m * 10 + n1 % 10
-        n1 = n1 / 10
+        n1 /= 10
     }
     return m
 }
@@ -287,14 +287,9 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var n1 = n
-    var n2 = revert(n)
+    val n1 = revert(n)
 
-    while ((n1 % 10 == n2 % 10) && (n1 > 0 && n2 > 0)){
-        n1 /= 10
-        n2 /= 10
-    }
-    return n1 == 0
+    return n1 == n
 }
 
 /**
@@ -371,7 +366,7 @@ fun fibSequenceDigit(n: Int): Int {
         m += digitNumber(y)
         if (m >= n) {
             for (i in 1..m - n) {
-                d = d * 10
+                d *= 10
             }
             y /= d
             ans = y % 10
