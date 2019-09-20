@@ -293,7 +293,7 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var ans = 0
-    var s = digits.size - 1
+    val s = digits.size - 1
     for (i in digits.indices) {
         ans += digits[i] * base.toDouble().pow(s - i).toInt()
     }
@@ -339,76 +339,35 @@ fun roman(n: Int): String {
     var n1 = n
     var ans = ""
     val listN = mutableListOf<Int>()
-    val listC = listOf('M', 'D', 'C', 'L', 'X', 'V', 'I')
-
+    val listC1 = listOf("M", "C", "X", "I")
+    val listC2 = listOf("D", "L", "V")
     listN.add(n1 / 1000)
     n1 -= 1000 * listN[0]
-    listN.add(n1 / 500)
-    n1 -= 500 * listN[1]
     listN.add(n1 / 100)
-    n1 -= 100 * listN[2]
-    listN.add(n1 / 50)
-    n1 -= 50 * listN[3]
+    n1 -= 100 * listN[1]
     listN.add(n1 / 10)
-    n1 -= 10 * listN[4]
-    listN.add(n1 / 5)
-    n1 -= 5 * listN[5]
+    n1 -= 10 * listN[2]
     listN.add(n1)
 
-    fun translate(minus: Char, i: Int) {
-        if (i > 0) {
-            if (i % 2 == 0) {
-                if (listN[i] == 4) {
-                    if (minus == 'n') translate(listC[i], i - 1) else translate(minus, i - 1)
-                } else {
-                    if (minus == 'n') {
-                        for (j in 1..listN[i]) {
-                            ans = listC[i] + ans
-                        }
-                    } else {
-                        ans = listC[i] + ans
-                        ans = minus + ans
-                        for (j in 1..listN[i]){
-                            ans = listC[i] + ans
-                        }
-                    }
-                    translate('n', i - 1)
-                }
-            } else {
-                if (listN[i] == 1 && minus != 'n') {
-                    translate(minus, i - 1)
-                } else {
-                    if (minus == 'n') {
-                        if (listN[i] > 0){
-                            ans = listC[i] + ans
-                        }
-                    } else {
-                        ans = listC[i] + ans
-                        ans = minus + ans
-                        if (listN[i] > 0) {
-                            ans = listC[i] + ans
-                        }
-                    }
-                    translate('n', i - 1)
-                }
-            }
-        } else {
-            if (minus == 'n') {
-                for (j in 1..listN[i]) {
-                    ans = listC[i] + ans
-                }
-            } else {
-                ans = listC[i] + ans
-                ans = minus + ans
-                for (j in 1..listN[i]) {
-                    ans = listC[i] + ans
-                }
-            }
+    for (i in 3 downTo 1) {
+        ans = when (listN[i]) {
+            1 -> listC1[i] + ans
+            2 -> listC1[i] + listC1[i] + ans
+            3 -> listC1[i] + listC1[i] + listC1[i] + ans
+            4 -> listC1[i] + listC2[i - 1] + ans
+            5 -> listC2[i - 1] + ans
+            6 -> listC2[i - 1] + listC1[i] + ans
+            7 -> listC2[i - 1] + listC1[i] + listC1[i] + ans
+            8 -> listC2[i - 1] + listC1[i] + listC1[i] + listC1[i] + ans
+            9 -> listC1[i] + listC1[i - 1] + ans
+            else -> ans
         }
     }
+    for (i in 1..listN[0]) {
+        ans = listC1[0] + ans
+    }
 
-    translate('n', 6)
-    return  ans
+    return ans
 }
 
 /**
