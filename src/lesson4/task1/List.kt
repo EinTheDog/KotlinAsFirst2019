@@ -424,6 +424,7 @@ fun russian(n: Int): String {
 
     if (is10) {
         when (list2[0]) {
+            0 -> ans += " десять"
             1 -> ans += " одиннадцать"
             2 -> ans += " двенадцать"
             3 -> ans += " тринадцать"
@@ -456,6 +457,7 @@ fun russian(n: Int): String {
 
     if (is10) {
         when (list1[0]) {
+            0 -> ans += " десять"
             1 -> ans += " одиннадцать"
             2 -> ans += " двенадцать"
             3 -> ans += " тринадцать"
