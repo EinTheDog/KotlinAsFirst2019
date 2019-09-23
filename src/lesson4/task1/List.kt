@@ -120,8 +120,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  */
 fun abs(v: List<Double>): Double {
     var ans = 0.0
-    for (i in v.indices) {
-        ans += sqr(v[i])
+    for (o in v) {
+        ans += sqr(o)
     }
     return sqrt(ans)
 }
@@ -133,7 +133,7 @@ fun abs(v: List<Double>): Double {
  */
 fun mean(list: List<Double>): Double {
     var ans = 0.0
-    for (i in list.indices) ans += list[i]
+    for (o in list) ans += o
     return if (list.isNotEmpty()) ans / list.size else 0.0
 }
 
@@ -146,11 +146,7 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    var mid = 0.0
-    for (a in list) {
-        mid += a
-    }
-    mid /= list.size
+    val mid = mean(list)
     for (i in list.indices) {
         list[i] -= mid
     }
