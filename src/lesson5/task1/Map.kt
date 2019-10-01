@@ -116,8 +116,8 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     var ans = true
     for ((key, value) in a) {
-        if (b[key] != value ) {
-            ans =false
+        if (b[key] != value) {
+            ans = false
             break
         }
     }
@@ -159,7 +159,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     val ans = mutableSetOf<String>()
-    for (o in a){
+    for (o in a) {
         if (b.contains(o) && !ans.contains(o)) ans.add(o)
     }
     return ans.toList()
@@ -183,7 +183,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val mapC= mapA.toMutableMap()
+    val mapC = mapA.toMutableMap()
     for ((key, value) in mapB) {
         if (key !in mapC) {
             mapC[key] = value
@@ -213,7 +213,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         if (key !in mapA) {
             mapA[key] = value
             mapB[key] = 1
-        } else{
+        } else {
             mapB[key] = mapB[key]!! + 1
             mapA[key] = (mapA[key]!! + value) / mapB[key]!!
         }
@@ -302,7 +302,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
             ans[key] = ans[key]!! + 1
         }
     }
-    for ((key, value) in ans) {
+    for ((key) in ans) {
         if (ans[key]!! < 2) {
             delete.add(key)
         }
@@ -441,37 +441,30 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val treasures1 = treasures.toList()
-    val bag = mutableMapOf<Int, MutableList<Int>>()
-    val ans = mutableSetOf<String>()
-    for (i in 0..treasures.size) {
-        bag[i] = mutableListOf<Int>()
-        for (j in 0..capacity) {
-            bag[i]!!.add(0)
-        }
-    }
 
-    var i = 1
-    for ((key, value) in treasures) {
+    val bag = Array(treasures.size + 1) { Array<Int>(capacity + 1) { 0 } }
+    val list = treasures.toList()
+    val ans = mutableListOf<String>()
+    for (i in 1..treasures.size) {
         for (j in 1..capacity) {
-            if (j - value.second > 0 && bag[i - 1]!![j] < bag[i - 1]!![j - value.second] + value.first) {
-                bag[i]!![j] = bag[i - 1]!![j - value.second] + value.first
+            val weight = list[i - 1].second.first
+            val value = list[i - 1].second.second
+            if (j - weight >= 0 && bag[i - 1][j - weight] + value > bag[i - 1][j]) {
+                bag[i][j] = bag[i - 1][j - weight] + value
             } else {
-                bag[i]!![j] = bag[i - 1]!![j]
+                bag[i][j] = bag[i - 1][j]
             }
         }
-        i++
     }
-
-    i--
     var j = capacity
-    while (i > 0) {
-        val value = treasures1[i - 1].second
-        if (j - value.second > 0 && bag[i]!![j] == bag[i - 1]!![j - value.second] + value.first) {
-            ans.add(treasures1[i - 1].first)
-            j -= value.second
+    for (i in treasures.size downTo 1) {
+        val weight = list[i - 1].second.first
+        val value = list[i - 1].second.second
+        val name = list[i - 1].first
+        if (j - weight >= 0 && bag[i][j] == bag[i - 1][j - weight] + value) {
+            j -= weight
+            ans += name
         }
-        i--
     }
-    return ans
+    return ans.toSet()
 }
