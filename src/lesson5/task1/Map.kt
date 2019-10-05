@@ -218,7 +218,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
             mapA[key] = mapA[key]!! + value
         }
     }
-    for ((key, value) in mapA) {
+    for ((key) in mapA) {
         mapA[key] = mapA[key]!! / mapB[key]!!
     }
     return mapA
@@ -444,30 +444,66 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val bag = mutableListOf<Pair<String, MutableList<Pair<Int, Int>>>>()
+    for ((Key) in treasures) {
+        bag.add(Pair(Key, mutableListOf<Pair<Int, Int>>()))
+    }
+    var weight = treasures[bag[0].first]!!.first
+    var cost = treasures[bag[0].first]!!.second
+    if (weight <= capacity) bag[0].second.add(Pair(weight, cost))
 
-    val bag = Array(treasures.size + 1) { Array<Int>(capacity + 1) { 0 } }
-    val list = treasures.toList()
-    val ans = mutableListOf<String>()
-    for (i in 1..treasures.size) {
-        for (j in 1..capacity) {
-            val weight = list[i - 1].second.first
-            val value = list[i - 1].second.second
-            if (j - weight >= 0 && bag[i - 1][j - weight] + value > bag[i - 1][j]) {
-                bag[i][j] = bag[i - 1][j - weight] + value
-            } else {
-                bag[i][j] = bag[i - 1][j]
+    var i = 1
+    while (i < bag.size) {
+        weight = treasures[bag[i].first]!!.first
+        cost = treasures[bag[i].first]!!.second
+
+        var j = 0
+        while (j < bag[i - 1].second.size && bag[i - 1].second[j].first < weight) {
+            val weight2 = bag[i - 1].second[j].first
+            val cost2 = bag[i - 1].second[j].second
+            bag[i].second.add(Pair(weight2, cost2))
+            j++
+        }
+
+        if (weight <= capacity) {
+            if (bag[i].second[j].second < cost) {
+                bag[i].second.add(Pair(weight, cost))
+            }
+
+            for ((weight2, cost2) in bag[i - 1].second) {
+                if (cost2 > bag[i].second[j - 1].second) {
+                    bag[i].second.add(Pair(weight2, cost2))
+                }
+                if (cost + cost2 > bag[i].second[j - 1].second && weight + weight2 <= capacity) {
+                    bag[i].second.add(Pair(weight + weight2, cost + cost2))
+                }
             }
         }
+        i++
     }
-    var j = capacity
-    for (i in treasures.size downTo 1) {
-        val weight = list[i - 1].second.first
-        val value = list[i - 1].second.second
-        val name = list[i - 1].first
-        if (j - weight >= 0 && bag[i][j] == bag[i - 1][j - weight] + value) {
-            j -= weight
-            ans += name
+
+    i--
+    val ans = mutableSetOf<String>()
+    if (bag[i].second.size > 0) {
+        var j: Int
+        var w = bag[i].second[bag[i].second.size - 1].first
+        var c = bag[i].second[bag[i].second.size - 1].second
+        while (i > 0 && w > 0) {
+            j = bag[i].second.indexOf(Pair(w, c))
+            weight = treasures[bag[i].first]!!.first
+            cost = treasures[bag[i].first]!!.second
+            val cost2 = bag[i - 1].second[j].second
+            if (cost2 != c) {
+                ans.add(bag[i].first)
+                w -= weight
+                c -= cost
+            }
+            i--
+        }
+        if (w > 0) {
+            ans.add(bag[i].first)
         }
     }
-    return ans.toSet()
+
+    return ans
 }
