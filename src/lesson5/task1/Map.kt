@@ -261,7 +261,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.containsAll(word.toSet())
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.toString().toLowerCase().toList().containsAll(word.toLowerCase().toList())
 
 /**
  * Средняя
@@ -417,6 +417,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    if (treasures.isEmpty()) return setOf()
     val bag = mutableListOf<Pair<String, MutableList<Pair<Int, Int>>>>()
     for ((Key) in treasures) {
         bag.add(Pair(Key, mutableListOf<Pair<Int, Int>>()))

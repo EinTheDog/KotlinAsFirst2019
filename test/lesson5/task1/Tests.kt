@@ -239,6 +239,8 @@ class Tests {
         assertFalse(canBuildFrom(emptyList(), "foo"))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
+        assertTrue(canBuildFrom(listOf('A'), "a"))
+        assertTrue(canBuildFrom(listOf('a'), "A"))
     }
 
     @Test
@@ -330,6 +332,14 @@ class Tests {
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 450
+            )
+        )
+
+        assertEquals(
+            emptySet<String>(),
+            bagPacking(
+                mapOf(),
+                1
             )
         )
     }
