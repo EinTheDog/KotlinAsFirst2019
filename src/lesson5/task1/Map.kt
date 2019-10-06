@@ -114,14 +114,12 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    var ans = true
     for ((key, value) in a) {
         if (b[key] != value) {
-            ans = false
-            return ans
+            return false
         }
     }
-    return ans
+    return true
 }
 
 /**
@@ -387,10 +385,12 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val map = mutableMapOf<Int, Int>()
     for (i in list.indices) {
-        if (list.contains(number - list[i])) {
-            return Pair(i, list.indexOf(number - list[i]))
+        if (map[list[i]] != null) {
+            return Pair(map[list[i]]!!, i)
         }
+        map[number - list[i]] = i
     }
     return Pair(-1, -1)
 }
