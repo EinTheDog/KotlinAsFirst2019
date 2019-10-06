@@ -241,6 +241,7 @@ class Tests {
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
         assertTrue(canBuildFrom(listOf('A'), "a"))
         assertTrue(canBuildFrom(listOf('a'), "A"))
+        assertFalse(canBuildFrom(listOf('a', 'a'), ","))
     }
 
     @Test
@@ -350,6 +351,15 @@ class Tests {
                 1
             )
         )
+
+        assertEquals(
+            setOf("0", "1"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1)),
+                2
+            )
+        )
+
     }
 
     // TODO: map task tests
