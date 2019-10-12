@@ -469,7 +469,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             j = bag[i].second.indexOf(Pair(w, c))
             weight = treasures[bag[i].first]!!.first
             cost = treasures[bag[i].first]!!.second
-            var cost2 = bag[i-1].second.last().second
+            var cost2 = if (bag[i - 1].second.isNotEmpty()) bag[i - 1].second.last().second else 0
             if (cost2 != c) {
                 ans.add(bag[i].first)
                 w -= weight
