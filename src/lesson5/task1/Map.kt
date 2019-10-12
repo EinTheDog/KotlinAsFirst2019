@@ -439,20 +439,25 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             bag[i].second.add(Pair(weight2, cost2))
             j++
         }
-        if (weight <= capacity) {
-            if (bag[i].second.size == 0 || bag[i].second[j - 1].second < cost) {
-                bag[i].second.add(Pair(weight, cost))
+        if (weight <= capacity && (bag[i].second.size == 0 || bag[i].second[j - 1].second < cost)) {
+            bag[i].second.add(Pair(weight, cost))
+            j++
+        }
+        for ((weight2, cost2) in bag[i - 1].second) {
+            if (bag[i].second.size == 0 || cost2 > bag[i].second[j - 1].second) {
+                bag[i].second.add(Pair(weight2, cost2))
                 j++
-            }
-
-            for ((weight2, cost2) in bag[i - 1].second) {
-                if (bag[i].second.size == 0 || cost2 > bag[i].second[j - 1].second) {
-                    bag[i].second.add(Pair(weight2, cost2))
-                    j++
+            } else {
+                if (cost2 == bag[i].second[j - 1].second && weight2 < bag[i].second[j - 1].first) {
+                    bag[i].second[j - 1] = Pair(weight2, cost2)
                 }
-                if (bag[i].second.size == 0 || cost + cost2 > bag[i].second[j - 1].second && weight + weight2 <= capacity) {
-                    bag[i].second.add(Pair(weight + weight2, cost + cost2))
-                    j++
+            }
+            if (bag[i].second.size == 0 || cost + cost2 > bag[i].second[j - 1].second && weight + weight2 <= capacity) {
+                bag[i].second.add(Pair(weight + weight2, cost + cost2))
+                j++
+            } else {
+                if (cost2 + cost == bag[i].second[j - 1].second && weight2 + weight < bag[i].second[j - 1].first && weight + weight2 <= capacity) {
+                    bag[i].second[j - 1] = Pair(weight2 + weight, cost2 + cost)
                 }
             }
         }
