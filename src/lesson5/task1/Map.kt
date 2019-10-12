@@ -457,6 +457,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             bag[i].second.add(Pair(weight, cost))
         }
         for ((weight2, cost2) in bag[i - 1].second) {
+            if (cost2 > bag[i].second[j - 1].second) {
+                bag[i].second.add(Pair(weight2, cost2))
+            }
             if (bag[i].second.isEmpty() || (cost2 + cost > bag[i].second[j - 1].second && weight + weight2 <= capacity)) {
                 val f: Pair<Int, Int>? =
                     bag[i - 1].second.find { it.second == cost + cost2 && it.first < weight + weight2 }
