@@ -453,7 +453,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             }
             j++
         }
-        if (weight <= capacity && bag[i].second[j - 1].second < cost) {
+        if (j > 0 && bag[i].second[j - 1].second < cost && weight <= capacity) {
             bag[i].second.add(Pair(weight, cost))
         }
         for ((weight2, cost2) in bag[i - 1].second) {

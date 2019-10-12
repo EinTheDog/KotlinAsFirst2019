@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import java.lang.String.format
+
 /**
  * Пример
  *
@@ -69,7 +71,33 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val list1 = str.split(" ")
+    val list2 = mutableListOf<Int>()
+    if (list1.size != 3) return ""
+    list2 += list1[0].toInt()
+    list2 += when (list1[1]) {
+        "января" -> 1
+        "февраля" -> 2
+        "марта" -> 3
+        "апреля" -> 4
+        "мая" -> 5
+        "июня" -> 6
+        "июля" -> 7
+        "августа" -> 8
+        "сентября" -> 9
+        "октября" -> 10
+        "ноября" -> 11
+        "декабря" -> 12
+        else -> -1
+    }
+    list2 += list1[2].toInt()
+    return if (list2[2] <= 0 || list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
+        ""
+    } else {
+        format("%02d.%02d.%02d", list2[0], list2[1], list2[2])
+    }
+}
 
 /**
  * Средняя
@@ -81,7 +109,43 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val listDigit = digital.split(".")
+    val listAns = mutableListOf<String>()
+    if (listDigit.size != 3) return ""
+
+    try {
+        listAns += listDigit[0].toInt().toString()
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+
+    listAns += when (listDigit[1].toInt()) {
+        1 -> "января"
+        2 -> "февраля"
+        3 -> "марта"
+        4 -> "апреля"
+        5 -> "мая"
+        6 -> "июня"
+        7 -> "июля"
+        8 -> "августа"
+        9 -> "сентября"
+        10 -> "октября"
+        11 -> "ноября"
+        12 -> "декабря"
+        else -> ""
+    }
+    listAns += listDigit[2]
+    return if (listDigit[2].toInt() <= 0 || listAns[1] == "" || listDigit[0].toInt() > lesson2.task2.daysInMonth(
+            listDigit[1].toInt(),
+            listDigit[2].toInt()
+        )
+    ) {
+        ""
+    } else {
+        "${listAns[0]} ${listAns[1]} ${listAns[2]}"
+    }
+}
 
 /**
  * Средняя
@@ -97,7 +161,30 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (phone[0] != '+' && phone[0] != ' ' && phone[0] != '-' && !phone[0].isDigit() && phone[0] != '(' && phone[0] != ')') return ""
+    for (o in phone.substring(1, phone.length)) {
+        if (!o.isDigit() && o != ' ' && o != '-' && o != ')' && o != '(') return ""
+    }
+    val test1 = phone.split('(')
+    if (test1.size > 1) {
+        if (test1.size > 2 || !test1[1].contains(')')) return ""
+        val sub1Test1 = test1[1].substring(0, test1[1].indexOf(')'))
+        val sub2Test1 = test1[1].substring(test1[1].indexOf(')') + 1, test1[1].length)
+        if (sub1Test1.isEmpty()) return ""
+        if (sub2Test1.contains(')')) return ""
+    }
+
+    var ans = ""
+    if (phone[0] == '+' || phone[0].isDigit()) ans += phone[0]
+    ans += phone.substring(1, phone.length).filter { it.isDigit() }
+    val length = ans.length
+    return when {
+        ans[0] == '+' && (length in 6..12) -> ans
+        ans[0] != '+' && (length in 3..11) -> ans
+        else -> ""
+    }
+}
 
 /**
  * Средняя
@@ -109,7 +196,20 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    for (o in jumps) {
+        if (!o.isDigit() && o != '%' && o != ' ' && o != '-') return -1
+    }
+    val str = jumps.filter { it.isDigit() || it == ' ' }
+    val list = str.split(' ')
+    var best = -1
+    for (o in list) {
+        if (o.isNotEmpty() && o.toInt() > best) {
+            best = o.toInt()
+        }
+    }
+    return best
+}
 
 /**
  * Сложная
@@ -122,7 +222,32 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var i = 0
+    var best = -1
+
+    while (i < jumps.length) {
+        if (jumps[i].isDigit()) {
+            var heightStr = ""
+            while (jumps[i].isDigit()) {
+                heightStr += jumps[i]
+                i++
+            }
+            i++
+            val heightDig = heightStr.toInt()
+
+            while (i < jumps.length && jumps[i] != ' ') {
+                if (jumps[i] == '+' && best < heightDig) {
+                    best = heightDig
+                }
+                i++
+            }
+            i--
+        }
+        i++
+    }
+    return best
+}
 
 /**
  * Сложная
