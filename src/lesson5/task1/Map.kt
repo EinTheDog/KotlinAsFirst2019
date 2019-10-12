@@ -463,14 +463,15 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val ans = mutableSetOf<String>()
     if (bag[i].second.size > 0) {
         var j: Int
+        var k: Int
         var w = bag[i].second[bag[i].second.size - 1].first
         var c = bag[i].second[bag[i].second.size - 1].second
         while (i > 0 && w > 0) {
             j = bag[i].second.indexOf(Pair(w, c))
+            k = bag[i - 1].second.indexOf(Pair(w, c))
             weight = treasures[bag[i].first]!!.first
             cost = treasures[bag[i].first]!!.second
-            var cost2 = if (bag[i - 1].second.isNotEmpty()) bag[i - 1].second.last().second else 0
-            if (cost2 != c) {
+            if (k == -1) {
                 ans.add(bag[i].first)
                 w -= weight
                 c -= cost
