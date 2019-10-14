@@ -95,7 +95,7 @@ fun dateStrToDigit(str: String): String {
     return if (list2[2] <= 0 || list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
         ""
     } else {
-        format("%02d.%02d.%02d", list2[0], list2[1], list2[2])
+        format("%02d.%02d.%d", list2[0], list2[1], list2[2])
     }
 }
 
@@ -136,7 +136,7 @@ fun dateDigitToStr(digital: String): String {
         else -> ""
     }
     listAns += listDigit[2]
-    return if (listDigit[2].toInt() <= 0 || listAns[1] == "" || listDigit[0].toInt() > lesson2.task2.daysInMonth(
+    return if (listAns[1] == "" || listDigit[0].toInt() > lesson2.task2.daysInMonth(
             listDigit[1].toInt(),
             listDigit[2].toInt()
         )
@@ -162,6 +162,7 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
+    if (phone == "") return ""
     if (phone[0] != '+' && phone[0] != ' ' && phone[0] != '-' && !phone[0].isDigit() && phone[0] != '(' && phone[0] != ')') return ""
     for (o in phone.substring(1, phone.length)) {
         if (!o.isDigit() && o != ' ' && o != '-' && o != ')' && o != '(') return ""
