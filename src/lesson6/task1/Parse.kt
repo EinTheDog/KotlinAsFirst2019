@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+import java.lang.IllegalArgumentException
 import java.lang.String.format
 
 /**
@@ -259,7 +260,32 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    var i = 0
+    fun findNumber(): Int {
+        var numStr = ""
+        while (i < expression.length && expression[i].isDigit()) {
+            numStr += expression[i]
+            i++
+        }
+        return numStr.toInt()
+    }
+
+    try {
+        var ans = 0
+        ans += findNumber()
+        while (i < expression.length) {
+            i++
+            val ch = expression[i]
+            i += 2
+            val x = findNumber()
+            if (ch == '+') ans += x else ans -= x
+        }
+        return ans
+    } catch (e: IllegalArgumentException) {
+        throw e
+    }
+}
 
 /**
  * Сложная
@@ -270,7 +296,30 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    var i = 0
+    fun findWord(): String {
+        var word = ""
+        while (i < str.length && str[i] != ' ') {
+            word += str[i].toLowerCase()
+            i++
+        }
+        return word
+    }
+
+    var prev = findWord()
+    var cur: String
+    i++
+    while (i < str.length) {
+        cur = findWord()
+        if (cur == prev) {
+            return (i - 1 - 2 * cur.length)
+        }
+        prev = cur
+        i++
+    }
+    return -1
+}
 
 /**
  * Сложная
@@ -283,7 +332,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (description.isEmpty()) return ""
+    var expName = ""
+    var expPrice = -1.0
+    val list = description.split(";")
+    for (o in list) {
+        val list2 = o.trim().split(' ')
+        if (list2[1].toDouble() > expPrice) {
+            expPrice = list2[1].toDouble()
+            expName = list2[0]
+        }
+    }
+    return expName
+}
 
 /**
  * Сложная
