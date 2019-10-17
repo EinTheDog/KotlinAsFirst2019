@@ -358,7 +358,39 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    var ans = 0
+    var num1: Int
+    var num2: Int
+    for (i in roman.indices) {
+        num1 = when (roman[i]) {
+            'I' -> 1
+            'V' -> 5
+            'X' -> 10
+            'L' -> 50
+            'C' -> 100
+            'D' -> 500
+            'M' -> 1000
+            else -> return -1
+        }
+        if (i == roman.length - 1) {
+            ans += num1
+            break
+        }
+        num2 = when (roman[i + 1]) {
+            'I' -> 1
+            'V' -> 5
+            'X' -> 10
+            'L' -> 50
+            'C' -> 100
+            'D' -> 500
+            'M' -> 1000
+            else -> return -1
+        }
+        if (num2 > num1) ans -= num1 else ans += num1
+    }
+    return ans
+}
 
 /**
  * Очень сложная
@@ -396,4 +428,56 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val arr = Array<Int>(cells) { 0 }
+    val comList = listOf('+', '-', '>', '<', '[', ']', ' ')
+    var i = 0
+    var j = cells / 2
+    var lim = 0
+
+    for (o in commands) {
+        require(o in comList)
+    }
+
+    fun findNext() {
+        try {
+            require(']' in commands.substring(i))
+            while (commands[i] != ']') {
+                i++
+            }
+        } catch (e: IllegalStateException) {
+            throw e
+        }
+
+    }
+
+    fun findPrev() {
+        try {
+            while (commands[i] != '[') {
+                i--
+            }
+        } catch (e: IllegalStateException) {
+            throw e
+        }
+
+    }
+
+    while (i < commands.length && lim <= limit) {
+        when {
+            commands[i] == '>' -> j++
+            commands[i] == '<' -> j--
+            commands[i] == '+' -> arr[j]++
+            commands[i] == '-' -> arr[j]--
+            commands[i] == '[' && arr[j] == 0 -> {
+                findNext()
+                i++
+            }
+            commands[i] == '[' && arr[j] != 0 -> j++
+            commands[i] == ']' && arr[j] != 0 -> findPrev()
+            commands[i] == ']' && arr[j] == 0 -> j++
+        }
+        lim++
+        i++
+    }
+    return arr.toList()
+}
