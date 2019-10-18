@@ -429,7 +429,7 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    val arr = Array<Int>(cells) { 0 }
+    val arr = Array(cells) { 0 }
     val comList = listOf('+', '-', '>', '<', '[', ']', ' ')
     var i = 0
     var j = cells / 2
@@ -471,7 +471,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
 
     while (i < commands.length && lim <= limit) {
         check(j < cells)
-        val a = commands[i]
         when {
             commands[i] == '>' -> j++
             commands[i] == '<' -> j--
