@@ -93,7 +93,7 @@ fun dateStrToDigit(str: String): String {
         else -> -1
     }
     list2 += list1[2].toInt()
-    return if (list2[2] <= 0 || list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
+    return if (list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
         ""
     } else {
         format("%02d.%02d.%d", list2[0], list2[1], list2[2])
@@ -111,6 +111,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
+
     val listDigit = digital.split(".")
     val listAns = mutableListOf<String>()
     if (listDigit.size != 3) return ""
@@ -163,7 +164,7 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    if (phone == "") return ""
+    if (phone.trim().isEmpty()) return ""
     if (phone[0] != '+' && phone[0] != ' ' && phone[0] != '-' && !phone[0].isDigit() && phone[0] != '(' && phone[0] != ')') return ""
     for (o in phone.substring(1, phone.length)) {
         if (!o.isDigit() && o != ' ' && o != '-' && o != ')' && o != '(') return ""
@@ -261,6 +262,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
+    require(expression.isNotEmpty())
     var i = 0
     fun findNumber(): Int {
         var numStr = ""
@@ -359,6 +361,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
+    if (roman.trim().isEmpty()) return -1
     var ans = 0
     var num1: Int
     var num2: Int
@@ -470,7 +473,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     }
 
     while (i < commands.length && lim <= limit) {
-        check(j < cells)
+        check(j in 0 until cells)
         when {
             commands[i] == '>' -> j++
             commands[i] == '<' -> j--
