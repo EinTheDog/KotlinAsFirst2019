@@ -420,8 +420,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     if (treasures.isEmpty()) return setOf()
     val bag = mutableListOf<Pair<String, MutableList<Pair<Int, Int>>>>()
-    for ((Key) in treasures) {
-        bag.add(Pair(Key, mutableListOf<Pair<Int, Int>>()))
+    for ((key) in treasures) {
+        bag.add(Pair(key, mutableListOf<Pair<Int, Int>>()))
     }
     var weight = treasures[bag[0].first]!!.first
     var cost = treasures[bag[0].first]!!.second
@@ -440,7 +440,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         }
 
         if (weight <= capacity) {
-            var f = bag[i - 1].second.find { it.first == weight }
+            val f = bag[i - 1].second.find { it.first == weight }
             if (f == null || f.second < cost) {
                 if (j == 0 || cost > bag[i].second[j - 1].second) {
                     bag[i].second.add(Pair(weight, cost))
@@ -474,12 +474,10 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     i--
     val ans = mutableSetOf<String>()
     if (bag[i].second.size > 0) {
-        var j: Int
         var k: Int
         var w = bag[i].second[bag[i].second.size - 1].first
         var c = bag[i].second[bag[i].second.size - 1].second
         while (i > 0 && w > 0) {
-            j = bag[i].second.indexOf(Pair(w, c))
             k = bag[i - 1].second.indexOf(Pair(w, c))
             weight = treasures[bag[i].first]!!.first
             cost = treasures[bag[i].first]!!.second

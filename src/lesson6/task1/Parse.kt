@@ -433,48 +433,52 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val comList = listOf('+', '-', '>', '<', '[', ']', ' ')
     var i = 0
     var j = cells / 2
-    var lim = 0
+    var lim = 1
+    var pair = 0
 
     for (o in commands) {
         require(o in comList)
+        if (o == '[') pair++
+        if (o == ']') pair--
     }
+    require(pair == 0)
 
     fun findNext() {
         try {
-            require(']' in commands.substring(i))
-            while (commands[i] != ']') {
+            var next = 1
+            while (next > 0) {
                 i++
+                if (commands[i] == ']') next--
+                if (commands[i] == '[') next++
             }
         } catch (e: IllegalStateException) {
             throw e
         }
-
     }
 
     fun findPrev() {
         try {
-            while (commands[i] != '[') {
+            var next = 1
+            while (next > 0) {
                 i--
+                if (commands[i] == '[') next--
+                if (commands[i] == ']') next++
             }
         } catch (e: IllegalStateException) {
             throw e
         }
-
     }
 
     while (i < commands.length && lim <= limit) {
+        check(j < cells)
+        val a = commands[i]
         when {
             commands[i] == '>' -> j++
             commands[i] == '<' -> j--
             commands[i] == '+' -> arr[j]++
             commands[i] == '-' -> arr[j]--
-            commands[i] == '[' && arr[j] == 0 -> {
-                findNext()
-                i++
-            }
-            commands[i] == '[' && arr[j] != 0 -> j++
+            commands[i] == '[' && arr[j] == 0 -> findNext()
             commands[i] == ']' && arr[j] != 0 -> findPrev()
-            commands[i] == ']' && arr[j] == 0 -> j++
         }
         lim++
         i++
