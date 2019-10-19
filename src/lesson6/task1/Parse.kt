@@ -76,28 +76,33 @@ fun dateStrToDigit(str: String): String {
     val list1 = str.split(" ")
     val list2 = mutableListOf<Int>()
     if (list1.size != 3) return ""
-    list2 += list1[0].toInt()
-    list2 += when (list1[1]) {
-        "января" -> 1
-        "февраля" -> 2
-        "марта" -> 3
-        "апреля" -> 4
-        "мая" -> 5
-        "июня" -> 6
-        "июля" -> 7
-        "августа" -> 8
-        "сентября" -> 9
-        "октября" -> 10
-        "ноября" -> 11
-        "декабря" -> 12
-        else -> -1
+    try {
+        list2 += list1[0].toInt()
+        list2 += when (list1[1]) {
+            "января" -> 1
+            "февраля" -> 2
+            "марта" -> 3
+            "апреля" -> 4
+            "мая" -> 5
+            "июня" -> 6
+            "июля" -> 7
+            "августа" -> 8
+            "сентября" -> 9
+            "октября" -> 10
+            "ноября" -> 11
+            "декабря" -> 12
+            else -> -1
+        }
+        list2 += list1[2].toInt()
+        return if (list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
+            ""
+        } else {
+            format("%02d.%02d.%d", list2[0], list2[1], list2[2])
+        }
+    } catch (e: java.lang.NumberFormatException) {
+        return ""
     }
-    list2 += list1[2].toInt()
-    return if (list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
-        ""
-    } else {
-        format("%02d.%02d.%d", list2[0], list2[1], list2[2])
-    }
+
 }
 
 /**
@@ -118,34 +123,36 @@ fun dateDigitToStr(digital: String): String {
 
     try {
         listAns += listDigit[0].toInt().toString()
+
+        listAns += when (listDigit[1].toInt()) {
+            1 -> "января"
+            2 -> "февраля"
+            3 -> "марта"
+            4 -> "апреля"
+            5 -> "мая"
+            6 -> "июня"
+            7 -> "июля"
+            8 -> "августа"
+            9 -> "сентября"
+            10 -> "октября"
+            11 -> "ноября"
+            12 -> "декабря"
+            else -> ""
+        }
+
+
+        listAns += listDigit[2]
+        return if (listAns[1] == "" || listDigit[0].toInt() > lesson2.task2.daysInMonth(
+                listDigit[1].toInt(),
+                listDigit[2].toInt()
+            )
+        ) {
+            ""
+        } else {
+            "${listAns[0]} ${listAns[1]} ${listAns[2]}"
+        }
     } catch (e: NumberFormatException) {
         return ""
-    }
-
-    listAns += when (listDigit[1].toInt()) {
-        1 -> "января"
-        2 -> "февраля"
-        3 -> "марта"
-        4 -> "апреля"
-        5 -> "мая"
-        6 -> "июня"
-        7 -> "июля"
-        8 -> "августа"
-        9 -> "сентября"
-        10 -> "октября"
-        11 -> "ноября"
-        12 -> "декабря"
-        else -> ""
-    }
-    listAns += listDigit[2]
-    return if (listAns[1] == "" || listDigit[0].toInt() > lesson2.task2.daysInMonth(
-            listDigit[1].toInt(),
-            listDigit[2].toInt()
-        )
-    ) {
-        ""
-    } else {
-        "${listAns[0]} ${listAns[1]} ${listAns[2]}"
     }
 }
 
@@ -181,12 +188,7 @@ fun flattenPhoneNumber(phone: String): String {
     var ans = ""
     if (phone[0] == '+' || phone[0].isDigit()) ans += phone[0]
     ans += phone.substring(1, phone.length).filter { it.isDigit() }
-    val length = ans.length
-    return when {
-        ans[0] == '+' && (length in 6..12) -> ans
-        ans[0] != '+' && (length in 3..11) -> ans
-        else -> ""
-    }
+    return ans
 }
 
 /**
@@ -263,6 +265,9 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     require(expression.isNotEmpty())
+    for (o in expression) {
+        require(!(!o.isDigit() && o != ' ' && o != '+' && o != '-'))
+    }
     var i = 0
     fun findNumber(): Int {
         var numStr = ""
@@ -485,5 +490,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         lim++
         i++
     }
+    check(j in 0 until cells)
     return arr.toList()
 }
