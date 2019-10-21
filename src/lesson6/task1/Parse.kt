@@ -4,6 +4,7 @@ package lesson6.task1
 
 import java.lang.IllegalArgumentException
 import java.lang.String.format
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -171,20 +172,15 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    if (phone.trim().isEmpty()) return ""
-    if (phone[0] != '+' && phone[0] != ' ' && phone[0] != '-' && !phone[0].isDigit() && phone[0] != '(' && phone[0] != ')') return ""
-    for (o in phone.substring(1, phone.length)) {
-        if (!o.isDigit() && o != ' ' && o != '-' && o != ')' && o != '(') return ""
+    val list = listOf<Char>('+', '-', '(', ')', ' ')
+    if (phone.any { it !in list && !it.isDigit() }) return ""
+    val phone1 = phone.filter { it != ' ' && it != '-' }
+    val ans: String? = if (phone1.contains('(') || phone1.contains(')')) {
+        Regex("""\+?(\d)*\((\d)+\)(\d)+""").find(phone1)?.value
+    } else {
+        Regex("""\+?(\d)+""").find(phone1)?.value
     }
-    val phReg = phone.toRegex()
-    if (phone.(Regex("""^\(&\)$"""))) {
-
-    }
-
-    var ans = ""
-    if (phone[0] == '+' || phone[0].isDigit()) ans += phone[0]
-    ans += phone.substring(1, phone.length).filter { it.isDigit() }
-    return ans
+    return (ans ?: "").filter { it != '(' && it != ')' }
 }
 
 /**
@@ -229,13 +225,13 @@ fun bestHighJump(jumps: String): Int {
 
     while (i < jumps.length) {
         if (jumps[i].isDigit()) {
-            var heightStr = ""
+            val heightStr = StringBuilder()
             while (jumps[i].isDigit()) {
-                heightStr += jumps[i]
+                heightStr.append(jumps[i])
                 i++
             }
             i++
-            val heightDig = heightStr.toInt()
+            val heightDig = heightStr.toString().toInt()
 
             while (i < jumps.length && jumps[i] != ' ') {
                 if (jumps[i] == '+' && best < heightDig) {
@@ -302,12 +298,12 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     var i = 0
     fun findWord(): String {
-        var word = ""
+        val word = StringBuilder()
         while (i < str.length && str[i] != ' ') {
-            word += str[i].toLowerCase()
+            word.append(str[i].toLowerCase())
             i++
         }
-        return word
+        return word.toString()
     }
 
     var prev = findWord()
@@ -448,28 +444,20 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     require(pair == 0)
 
     fun findNext() {
-        try {
-            var next = 1
-            while (next > 0) {
-                i++
-                if (commands[i] == ']') next--
-                if (commands[i] == '[') next++
-            }
-        } catch (e: IllegalStateException) {
-            throw e
+        var next = 1
+        while (next > 0) {
+            i++
+            if (commands[i] == ']') next--
+            if (commands[i] == '[') next++
         }
     }
 
     fun findPrev() {
-        try {
-            var next = 1
-            while (next > 0) {
-                i--
-                if (commands[i] == '[') next--
-                if (commands[i] == ']') next++
-            }
-        } catch (e: IllegalStateException) {
-            throw e
+        var next = 1
+        while (next > 0) {
+            i--
+            if (commands[i] == '[') next--
+            if (commands[i] == ']') next++
         }
     }
 
