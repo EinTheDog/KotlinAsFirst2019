@@ -176,13 +176,9 @@ fun flattenPhoneNumber(phone: String): String {
     for (o in phone.substring(1, phone.length)) {
         if (!o.isDigit() && o != ' ' && o != '-' && o != ')' && o != '(') return ""
     }
-    val test1 = phone.split('(')
-    if (test1.size > 1) {
-        if (test1.size > 2 || !test1[1].contains(')')) return ""
-        val sub1Test1 = test1[1].substring(0, test1[1].indexOf(')'))
-        val sub2Test1 = test1[1].substring(test1[1].indexOf(')') + 1, test1[1].length)
-        if (sub1Test1.isEmpty()) return ""
-        if (sub2Test1.contains(')')) return ""
+    val phReg = phone.toRegex()
+    if (phone.(Regex("""^\(&\)$"""))) {
+
     }
 
     var ans = ""
