@@ -435,14 +435,16 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var j = cells / 2
     var lim = 1
     var pair = 0
+    var wrongPair = false
 
     for (o in commands) {
         require(o in comList)
         if (o == '[') pair++
         if (o == ']') pair--
-        check(pair >= 0)
+        if (pair < 0) wrongPair = true
     }
     require(pair == 0)
+    check(!wrongPair)
 
     fun findNext() {
         var next = 1
