@@ -440,6 +440,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         require(o in comList)
         if (o == '[') pair++
         if (o == ']') pair--
+        require(pair >= 0)
     }
     require(pair == 0)
 
