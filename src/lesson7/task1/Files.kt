@@ -3,6 +3,9 @@
 package lesson7.task1
 
 import java.io.File
+import java.io.File.separator
+import java.lang.StringBuilder
+import java.util.*
 
 /**
  * Пример
@@ -53,7 +56,23 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val ans = mutableMapOf<String, Int>()
+    for (o in substrings) {
+        ans[o] = 0
+    }
+    for (line in File(inputName).readLines()) {
+        for ((key) in ans) {
+            val l = key.length
+            (0..line.length - l).forEach { i ->
+                if (key.toLowerCase() == line.substring(i, i + l).toLowerCase()) {
+                    ans[key] = ans[key]!! + 1
+                }
+            }
+        }
+    }
+    return ans
+}
 
 
 /**
@@ -70,7 +89,29 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val letters = setOf<Char>('ж', 'ч', 'ш', 'щ')
+    val ans = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        val fixedLine = StringBuilder()
+        fixedLine.append(line[0])
+        for (i in 1 until line.length) {
+            if (line[i - 1].toLowerCase() in letters) {
+                when (line[i].toLowerCase()) {
+                    'ы' -> fixedLine.append('и')
+                    'я' -> fixedLine.append('а')
+                    'ю' -> fixedLine.append('у')
+                    else -> fixedLine.append(line[i])
+                }
+                val a = line[i].isUpperCase()
+                if (line[i].isUpperCase()) fixedLine[i] = fixedLine[i].toUpperCase()
+            } else {
+                fixedLine.append(line[i])
+            }
+        }
+        ans.write(fixedLine.toString())
+        ans.newLine()
+    }
+    ans.close()
 }
 
 /**
@@ -91,7 +132,23 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var max = 0
+    for (line in File(inputName).readLines()) {
+        if (line.length > max) max = line.length
+    }
+    for (line in File(inputName).readLines()) {
+        val line1 = line.trim()
+        val fixedLine = StringBuilder()
+        val l = line1.length
+        for (i in 1..(max - l) / 2) {
+            fixedLine.append(' ')
+        }
+        fixedLine.append(line1)
+        writer.write(fixedLine.toString())
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -122,7 +179,35 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var max = 0
+    for (line in File(inputName).readLines()) {
+        if (line.length > max) max = line.trim().length
+    }
+    for (line in File(inputName).readLines()) {
+        if (line == "") {
+            writer.newLine()
+            continue
+        }
+        val list = line.trim().split(' ').toMutableList()
+        if (list.size == 1) {
+            writer.write(line.trim())
+            writer.newLine()
+            continue
+        }
+        for (o in list) o.trim()
+        var l = list.joinToString("").length
+        var i = 0
+        while (l < max) {
+            list[i] += " "
+            i++
+            l++
+            i %= list.size - 1
+        }
+        writer.write(list.joinToString(""))
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -143,7 +228,33 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val allWords = mutableMapOf<String, Int>()
+    for (line in File(inputName).readLines()) {
+        val list = line.split(" ").toMutableList()
+        for (o in list) {
+            val key = o.filter { it.isLetter() }.toLowerCase()
+            if (key == ""){
+                continue
+            }
+            allWords[key] = (allWords[key] ?: 0) + 1
+        }
+    }
+    if (allWords.size <= 20) return allWords
+    var max = 0
+    for ((key, value) in allWords) {
+        if (max < value) {
+            max = value
+        }
+    }
+    val list = allWords.toList().toMutableList()
+    list.sortBy { it.second }
+    val top20 = mutableMapOf<String, Int>()
+    for (i in list.size - 1 downTo list.size - 20) {
+        top20[list[i].first] = list[i].second
+    }
+    return top20
+}
 
 /**
  * Средняя
@@ -181,7 +292,26 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val dictionary2 = mutableMapOf<Char, String>()
+    for ((key, value) in dictionary) {
+        val s = if (value.length > 1) value.substring(0, 1).toUpperCase() +
+                value.substring(1, value.length).toLowerCase()
+        else value.toUpperCase()
+        dictionary2[key.toLowerCase()] = s
+    }
+    for (line in File(inputName).readLines()) {
+        val row = StringBuilder()
+        for (i in line.indices) {
+            val key = line[i]
+            if (key.isUpperCase()) {
+                row.append(dictionary2[key.toLowerCase()] ?: key)
+            } else row.append((dictionary2[key.toLowerCase()] ?: key.toString()).toLowerCase())
+        }
+        writer.write(row.toString())
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -209,7 +339,22 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var words = listOf<String>()
+    var maxLength = 0
+    outer@ for (line in File(inputName).readLines()) {
+        val set = mutableSetOf<Char>()
+        for (o in line) {
+            if (o.toLowerCase() !in set) set.add(o.toLowerCase()) else continue@outer
+        }
+        if (line.length > maxLength) {
+            maxLength = line.length
+        }
+        words += line
+    }
+    words = words.filter { it.length == maxLength }
+    writer.write(words.joinToString(separator = ", "))
+    writer.close()
 }
 
 /**
@@ -258,7 +403,70 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val stack = mutableListOf<String>()
+    val writer = File(outputName).bufferedWriter()
+    stack.add("<html>")
+    writer.write((stack.last()))
+    writer.newLine()
+    stack.add("<body>")
+    writer.write((stack.last()))
+    writer.newLine()
+    stack.add("<p>")
+    writer.write((stack.last()))
+    writer.newLine()
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) {
+            writer.write("</p><p>")
+            continue
+        }
+        var i = 0
+        while (i < line.length) {
+            if (line[i] == '*') {
+                if (i < line.length - 1 && line[i + 1] == '*') {
+                    if (stack.last() != "<b>") {
+                        stack.add("<b>")
+                        writer.write(stack.last())
+                    } else {
+                        writer.write("</b>")
+                        stack.remove(stack.last())
+                    }
+                    i++
+                } else {
+                    if (stack.last() != "<i>") {
+                        stack.add("<i>")
+                        writer.write(stack.last())
+                    } else {
+                        writer.write("</i>")
+                        stack.remove(stack.last())
+                    }
+                }
+            } else {
+                if (i < line.length - 1 && line.substring(i, i + 2) == "~~") {
+                    if (stack.last() != "<s>") {
+                        stack.add("<s>")
+                        writer.write(stack.last())
+                    } else {
+                        writer.write("</s>")
+                        stack.remove(stack.last())
+                    }
+                    i++
+                } else {
+                    writer.write(line[i].toString())
+                }
+            }
+            i++
+        }
+        writer.newLine()
+    }
+    stack.remove(stack.last())
+    writer.write("</p>")
+    writer.newLine()
+    stack.remove(stack.last())
+    writer.write("</body>")
+    writer.newLine()
+    stack.remove(stack.last())
+    writer.write("</html>")
+    writer.close()
 }
 
 /**
@@ -402,7 +610,24 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val num1 = lhv.toString()
+    val num2 = rhv.toString()
+    val l = num2.length
+    for (j in 1 until l) writer.write(" ")
+    writer.write(lhv * num2[l - 1].toInt())
+    for (i in l - 2 downTo 0) {
+        val x = num2[i].toInt()
+        writer.write("+")
+        for (j in 1..i) writer.write(" ")
+        writer.write(lhv * num2[i].toInt())
+        writer.newLine()
+    }
+    val rowLength = l + (rhv * num2[l - 1].toInt()).toString().length
+    for (j in 1 until rowLength) writer.write("-")
+    writer.newLine()
+    writer.write(lhv * rhv)
+    writer.close()
 }
 
 
