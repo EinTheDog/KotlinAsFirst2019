@@ -569,7 +569,46 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+    val stack = mutableListOf<String>()
+    val writer = File(outputName).bufferedWriter()
+    var indentPrev = -1
+    var indentCur = -1
+
+    stack.add("<html>")
+    writer.write((stack.last()))
+    writer.newLine()
+    stack.add("<body>")
+    writer.write((stack.last()))
+    writer.newLine()
+
+    for (line in File(inputName).readLines()) {
+        indentPrev = indentCur
+        indentCur = (Regex(""" *""").find(line)?.value ?: "").length
+        if (indentCur > indentPrev) {
+            val s = if (line.trim()[0] == '*') "<ol>" else "<ul>"
+            stack.add(s)
+            writer.newLine()
+            writer.write(s)
+        } else {
+            if (indentCur < indentPrev) {
+                val s = if (stack.last() == "<ol>") "</ol>" else "</ul>"
+                stack.remove(stack.last())
+                writer.write(s)
+                writer.newLine()
+                if (stack.last() == "<li>") {
+                    stack.remove(stack.last())
+                    writer.write("</li>")
+                    writer.newLine()
+                }
+            } else {
+                val line2 = File(inputName).readLines()
+                writer.write("<li>")
+            }
+        }
+
+        writer.write(line.filter { it != '*' }.trim())
+    }
+
 }
 
 /**
@@ -614,19 +653,37 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val num1 = lhv.toString()
     val num2 = rhv.toString()
     val l = num2.length
-    for (j in 1 until l) writer.write(" ")
-    writer.write(lhv * num2[l - 1].toInt())
+    val rowLength = l + ((lhv * num2[l - 1].toString().toInt()).toString()).length
+
+    for (j in 1..(rowLength - num1.length)) writer.write(" ")
+    writer.write(num1)
+    writer.newLine()
+    writer.write("*")
+    for (j in 2..(rowLength - num2.length)) writer.write(" ")
+    writer.write(num2)
+    writer.newLine()
+
+    for (j in 1..rowLength) writer.write("-")
+    writer.newLine()
+
+    for (j in 0 until l) writer.write(" ")
+    writer.write((lhv * num2[l - 1].toString().toInt()).toString())
+    writer.newLine()
+
     for (i in l - 2 downTo 0) {
-        val x = num2[i].toInt()
+        val x = num2[i].toString().toInt()
         writer.write("+")
         for (j in 1..i) writer.write(" ")
-        writer.write(lhv * num2[i].toInt())
+        writer.write((lhv * num2[i].toString().toInt()).toString())
         writer.newLine()
     }
-    val rowLength = l + (rhv * num2[l - 1].toInt()).toString().length
-    for (j in 1 until rowLength) writer.write("-")
+
+    for (j in 1..rowLength) writer.write("-")
     writer.newLine()
-    writer.write(lhv * rhv)
+
+    val ans = (lhv * rhv).toString()
+    for (j in 1..(rowLength - ans.length)) writer.write(" ")
+    writer.write(ans)
     writer.close()
 }
 
