@@ -573,6 +573,7 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var indentPrev = -1
     var indentCur = -1
+    var indentNext = -1
 
     stack.add("<html>")
     writer.write((stack.last()))
@@ -581,34 +582,56 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     writer.write((stack.last()))
     writer.newLine()
 
-    for (line in File(inputName).readLines()) {
+    for (i in File(inputName).readLines().indices) {
+        val line = File(inputName).readLines()[i]
+        val nextLine = if (i < File(inputName).readLines().size - 1) File(inputName).readLines()[i + 1] else ""
         indentPrev = indentCur
         indentCur = (Regex(""" *""").find(line)?.value ?: "").length
+        indentNext = (Regex(""" *""").find(nextLine)?.value ?: "").length
+
         if (indentCur > indentPrev) {
-            val s = if (line.trim()[0] == '*') "<ol>" else "<ul>"
+            val s = if (line.trim()[0] == '*') "<ul>" else "<ol>"
             stack.add(s)
-            writer.newLine()
             writer.write(s)
-        } else {
-            if (indentCur < indentPrev) {
-                val s = if (stack.last() == "<ol>") "</ol>" else "</ul>"
-                stack.remove(stack.last())
-                writer.write(s)
+            writer.newLine()
+        }
+        if (indentCur < indentPrev) {
+            val s = if (stack.last() == "<ol>") "</ol>" else "</ul>"
+            stack.removeAt(stack.lastIndex)
+            writer.write(s)
+            writer.newLine()
+            if (stack.last() == "<li>") {
+                stack.removeAt(stack.lastIndex)
+                writer.write("</li>")
                 writer.newLine()
-                if (stack.last() == "<li>") {
-                    stack.remove(stack.last())
-                    writer.write("</li>")
-                    writer.newLine()
-                }
-            } else {
-                val line2 = File(inputName).readLines()
-                writer.write("<li>")
             }
         }
-
-        writer.write(line.filter { it != '*' }.trim())
+        if (indentCur < indentNext) {
+            stack.add("<li>")
+            writer.write("<li>")
+            writer.newLine()
+            writer.write(line.filter { it != '*' && !it.isDigit() && it != '.'}.trim())
+        } else {
+            writer.write("<li>${line.filter { it != '*' && !it.isDigit() && it != '.'}.trim()}</li>")
+        }
     }
-
+    while (stack.size > 2) {
+        val s = if (stack.last() == "<ol>") "</ol>" else "</ul>"
+        stack.removeAt(stack.lastIndex)
+        writer.write(s)
+        writer.newLine()
+        if (stack.last() == "<li>") {
+            stack.removeAt(stack.lastIndex)
+            writer.write("</li>")
+            writer.newLine()
+        }
+    }
+    stack.removeAt(stack.lastIndex)
+    writer.write("</body>")
+    writer.newLine()
+    stack.removeAt(stack.lastIndex)
+    writer.write("</html>")
+    writer.close()
 }
 
 /**
