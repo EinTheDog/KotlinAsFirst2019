@@ -231,18 +231,23 @@ fun alignFileByWidth(inputName: String, outputName: String) {
 fun top20Words(inputName: String): Map<String, Int> {
     val allWords = mutableMapOf<String, Int>()
     for (line in File(inputName).readLines()) {
-        val list = line.split(" ").toMutableList()
-        for (o in list) {
-            val key = o.filter { it.isLetter() }.toLowerCase()
-            if (key == ""){
-                continue
+        val word = StringBuilder()
+        var i = 0
+        while (i < line.length) {
+            if (line[i].isLetter()) {
+                word.append(line[i].toLowerCase())
+                i++
+            } else {
+                if (word.toString() != "") allWords[word.toString()] = (allWords[word.toString()] ?: 0) + 1
+                word.clear()
+                while (i < line.length && !line[i].isLetter()) i++
             }
-            allWords[key] = (allWords[key] ?: 0) + 1
         }
+        if (word.toString() != "") allWords[word.toString()] = (allWords[word.toString()] ?: 0) + 1
     }
     if (allWords.size <= 20) return allWords
     var max = 0
-    for ((key, value) in allWords) {
+    for ((key , value) in allWords) {
         if (max < value) {
             max = value
         }
@@ -582,6 +587,7 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     writer.write((stack.last()))
     writer.newLine()
 
+
     for (i in File(inputName).readLines().indices) {
         val line = File(inputName).readLines()[i]
         val nextLine = if (i < File(inputName).readLines().size - 1) File(inputName).readLines()[i + 1] else ""
@@ -643,7 +649,145 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
  *
  */
 fun markdownToHtml(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var curLine = ""
+    var nextLine = ""
+    var indentCur = -1
+    var indentPrev = -1
+    var indentNext = -1
+    val stack1 = mutableListOf<String>()
+    val stack2 = mutableListOf<String>()
+    var isList = false
+
+    stack1.add("<html>")
+    stack2.add("<html>")
+    writer.write("<html>")
+    writer.newLine()
+    stack1.add("<body>")
+    stack2.add("<body>")
+    writer.write("<body>")
+    writer.newLine()
+
+    var emptyLinesEx = false
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) emptyLinesEx =true
+    }
+    if (emptyLinesEx){
+        stack1.add("<p>")
+        writer.write("<p>")
+        writer.newLine()
+    }
+
+
+
+    fun writeLine(line: String) {
+        var i = 0
+        while (i < line.length) {
+            if (line[i] == '*') {
+                if (i < line.length - 1 && line[i + 1] == '*') {
+                    if (stack1.last() != "<b>") {
+                        stack1.add("<b>")
+                        writer.write(stack1.last())
+                    } else {
+                        writer.write("</b>")
+                        stack1.removeAt(stack1.lastIndex)
+                    }
+                    i++
+                } else {
+                    if (stack1.last() != "<i>") {
+                        stack1.add("<i>")
+                        writer.write(stack1.last())
+                    } else {
+                        writer.write("</i>")
+                        stack1.removeAt(stack1.lastIndex)
+                    }
+                }
+            } else {
+                if (i < line.length - 1 && line.substring(i, i + 2) == "~~") {
+                    if (stack1.last() != "<s>") {
+                        stack1.add("<s>")
+                        writer.write(stack1.last())
+                    } else {
+                        writer.write("</s>")
+                        stack1.removeAt(stack1.lastIndex)
+                    }
+                    i++
+                } else {
+                    writer.write(line[i].toString())
+                }
+            }
+            i++
+        }
+    }
+
+    for (i in File(inputName).readLines().indices) {
+        curLine = File(inputName).readLines()[i]
+        isList = if (curLine.trim().length > 0) curLine.trim()[0] == '*' || curLine.trim()[0].isDigit() else false
+        if (curLine.isEmpty()) {
+            writer.write("</p><p>")
+            writer.newLine()
+        } else {
+            nextLine = if (i < File(inputName).readLines().size - 1) File(inputName).readLines()[i + 1] else ""
+             indentPrev = indentCur
+             indentCur = (Regex(""" *""").find(curLine)?.value ?: "").length
+             indentNext = (Regex(""" *""").find(nextLine)?.value ?: "").length
+            if (isList && indentCur > indentPrev) {
+                val s = if (curLine.trim()[0] == '*') "<ul>" else "<ol>"
+                stack2.add(s)
+                writer.write(s)
+                writer.newLine()
+            }
+            val a = (indentCur < indentPrev && (stack2.last() == "<ol>" || stack2.last() == "<ul>" || stack2.last() == "<li>"))
+            if (indentCur < indentPrev && (stack2.last() == "<ol>" || stack2.last() == "<ul>" || stack2.last() == "<li>")) {
+                val s = if (stack2.last() == "<ol>") "</ol>" else "</ul>"
+                stack2.removeAt(stack2.lastIndex)
+                writer.write(s)
+                writer.newLine()
+                if (stack2.last() == "<li>") {
+                    stack2.removeAt(stack2.lastIndex)
+                    writer.write("</li>")
+                    writer.newLine()
+                }
+            }
+            var startIndex = 0
+            while (curLine[startIndex].isDigit() || curLine[startIndex] == ' ' || curLine[startIndex] == '*' || curLine[startIndex] == '.') startIndex++
+            if (isList && indentCur < indentNext) {
+                stack2.add("<li>")
+                writer.write("<li>")
+                writer.newLine()
+                writeLine(curLine.substring(startIndex))
+                writer.newLine()
+            } else {
+                if (isList) writer.write("<li>")
+                writeLine(curLine.substring(startIndex))
+                if (isList) writer.write("</li>")
+                writer.newLine()
+            }
+        }
+    }
+    if (emptyLinesEx){
+        stack1.remove("<p>")
+        writer.write("</p>")
+        writer.newLine()
+    }
+    while (stack2.size > 2) {
+        val s = if (stack2.last() == "<ol>") "</ol>" else "</ul>"
+        stack2.removeAt(stack2.lastIndex)
+        writer.write(s)
+        writer.newLine()
+        if (stack2.last() == "<li>") {
+            stack2.removeAt(stack2.lastIndex)
+            writer.write("</li>")
+            writer.newLine()
+        }
+    }
+    stack2.removeAt(stack2.lastIndex)
+    writer.write("</body>")
+    writer.newLine()
+    stack2.removeAt(stack2.lastIndex)
+    writer.write("</html>")
+
+    writer.close()
 }
 
 /**
@@ -733,5 +877,35 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
+//    val lhvL = lhv.toString().length
+//    var lhv1 = lhv
+//    val num1S = lhv.toString()
+//    val num2S = rhv.toString()
+//    var indent = 1
+//    val writer = File(outputName).bufferedWriter()
+//
+//    writer.write("$num1S | $num2S")
+//    writer.newLine()
+//
+//    var l = 1
+//    while (lhv1.toString().substring(0, l).toInt() <= rhv) l++
+//    l--
+//    var curLhv = lhv1.toString().substring(0, l).toInt()
+//    while (lhv1 > rhv) {
+//        l++
+//        curLhv = curLhv * 10 + lhv1.toString()[l - 1].toInt()
+//        var k = 0
+//        while (rhv * (k + 1) <= curLhv) k++
+//        for (i in 1 until indent + (curLhv.toString().length - (rhv * k).toString().length)) writer.write(" ")
+//        writer.write("-${rhv * k}")
+//        indent += curLhv.toString().length
+//        for (i in 1..indent) writer.write("-")
+//        curLhv -= rhv * k
+//        indent -= curLhv.toString().length
+//        for (i in 1..indent) writer.write(" ")
+//        writer.write(curLhv)
+//
+//
+//    }
 }
 
