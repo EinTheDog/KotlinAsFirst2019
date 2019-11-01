@@ -444,7 +444,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         if (pair < 0) wrongPair = true
     }
     require(pair == 0)
-    check(!wrongPair)
+    require(!wrongPair) { "Unpaired closing bracket" }
 
     fun findNext() {
         var next = 1

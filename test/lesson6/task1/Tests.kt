@@ -168,5 +168,6 @@ class Tests {
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(2, "<<", 500) }
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(1, "--+<+>+<][++", 97378) }
+        assertThrows(IllegalStateException::class.java) { computeDeviceCells(1, "+-++++++-+]++[]+-++[+-", 526) }
     }
 }
