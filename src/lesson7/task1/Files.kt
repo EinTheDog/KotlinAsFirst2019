@@ -6,6 +6,7 @@ import java.io.File
 import java.io.File.separator
 import java.lang.StringBuilder
 import java.util.*
+import kotlin.math.pow
 
 /**
  * Пример
@@ -876,36 +877,48 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
-//    val lhvL = lhv.toString().length
-//    var lhv1 = lhv
-//    val num1S = lhv.toString()
-//    val num2S = rhv.toString()
-//    var indent = 1
-//    val writer = File(outputName).bufferedWriter()
-//
-//    writer.write("$num1S | $num2S")
-//    writer.newLine()
-//
-//    var l = 1
-//    while (lhv1.toString().substring(0, l).toInt() <= rhv) l++
-//    l--
-//    var curLhv = lhv1.toString().substring(0, l).toInt()
-//    while (lhv1 > rhv) {
-//        l++
-//        curLhv = curLhv * 10 + lhv1.toString()[l - 1].toInt()
-//        var k = 0
-//        while (rhv * (k + 1) <= curLhv) k++
-//        for (i in 1 until indent + (curLhv.toString().length - (rhv * k).toString().length)) writer.write(" ")
-//        writer.write("-${rhv * k}")
-//        indent += curLhv.toString().length
-//        for (i in 1..indent) writer.write("-")
-//        curLhv -= rhv * k
-//        indent -= curLhv.toString().length
-//        for (i in 1..indent) writer.write(" ")
-//        writer.write(curLhv)
-//
-//
-//    }
+    var lhv1 = lhv
+    val num1S = lhv.toString()
+    val num2S = rhv.toString()
+    var indent = 1
+    val writer = File(outputName).bufferedWriter()
+
+    writer.write(" $num1S | $num2S")
+    writer.newLine()
+
+    var l = 1
+    while (l < num1S.length && num1S.substring(0, l).toInt() <= rhv) l++
+    var curLhv = num1S.substring(0, l).toInt()
+    var curLhvS = curLhv.toString()
+    do {
+        var k = 0
+        while (rhv * (k + 1) <= curLhv) k++
+        for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
+        writer.write("-${rhv * k}")
+
+        if (indent + (curLhvS.length - (rhv * k).toString().length) == 1) {
+            for (i in "-${rhv * k}".length.." $num1S |".length) writer.write(" ")
+            writer.write((lhv / rhv).toString())
+        }
+        writer.newLine()
+
+        for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
+        for (i in 1.."-${rhv * k}".length) writer.write("-")
+        writer.newLine()
+
+        indent += curLhvS.length - (curLhv - rhv * k).toString().length
+        curLhv -= rhv * k
+        curLhvS = curLhv.toString()
+        lhv1 -= rhv * k * 10.0.pow(num1S.length - l).toInt()
+        for (i in 1..indent) writer.write(" ")
+        l++
+        if (l <= num1S.length) {
+            curLhv = curLhv * 10 + num1S[l - 1].toString().toInt()
+            curLhvS += num1S[l - 1].toString()
+        }
+        writer.write(curLhvS)
+        writer.newLine()
+    } while (lhv1 > rhv)
+    writer.close()
 }
 
