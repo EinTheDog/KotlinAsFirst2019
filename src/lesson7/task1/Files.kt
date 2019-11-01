@@ -103,7 +103,6 @@ fun sibilants(inputName: String, outputName: String) {
                     'ю' -> fixedLine.append('у')
                     else -> fixedLine.append(line[i])
                 }
-                val a = line[i].isUpperCase()
                 if (line[i].isUpperCase()) fixedLine[i] = fixedLine[i].toUpperCase()
             } else {
                 fixedLine.append(line[i])
@@ -248,7 +247,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     }
     if (allWords.size <= 20) return allWords
     var max = 0
-    for ((key , value) in allWords) {
+    for (value in allWords.values) {
         if (max < value) {
             max = value
         }
@@ -738,7 +737,6 @@ fun markdownToHtml(inputName: String, outputName: String) {
                 writer.write(s)
                 writer.newLine()
             }
-            val a = (indentCur < indentPrev && (stack2.last() == "<ol>" || stack2.last() == "<ul>" || stack2.last() == "<li>"))
             if (indentCur < indentPrev && (stack2.last() == "<ol>" || stack2.last() == "<ul>" || stack2.last() == "<li>")) {
                 val s = if (stack2.last() == "<ol>") "</ol>" else "</ul>"
                 stack2.removeAt(stack2.lastIndex)
@@ -839,7 +837,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.newLine()
 
     for (i in l - 2 downTo 0) {
-        val x = num2[i].toString().toInt()
         writer.write("+")
         for (j in 1..i) writer.write(" ")
         writer.write((lhv * num2[i].toString().toInt()).toString())
