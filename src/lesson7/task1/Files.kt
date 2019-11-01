@@ -416,9 +416,15 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     stack.add("<body>")
     writer.write((stack.last()))
     writer.newLine()
-    stack.add("<p>")
-    writer.write((stack.last()))
-    writer.newLine()
+    var emptyLinesEx = false
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) emptyLinesEx =true
+    }
+    if (emptyLinesEx){
+        stack.add("<p>")
+        writer.write("<p>")
+        writer.newLine()
+    }
     for (line in File(inputName).readLines()) {
         if (line.isEmpty()) {
             writer.write("</p><p>")
@@ -463,9 +469,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         writer.newLine()
     }
-    stack.remove(stack.last())
-    writer.write("</p>")
-    writer.newLine()
+    if (emptyLinesEx){
+        stack.remove("<p>")
+        writer.write("</p>")
+        writer.newLine()
+    }
     stack.remove(stack.last())
     writer.write("</body>")
     writer.newLine()
