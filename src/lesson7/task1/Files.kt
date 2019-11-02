@@ -842,11 +842,13 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 
     for (j in 0 until l) writer.write(" ")
     writer.write((lhv * num2[l - 1].toString().toInt()).toString())
+    val firstL = (lhv * num2[l - 1].toString().toInt()).toString().length
     writer.newLine()
 
     for (i in l - 2 downTo 0) {
+        var curL = (lhv * num2[i].toString().toInt()).toString().length
         writer.write("+")
-        for (j in 1..i) writer.write(" ")
+        for (j in 0 until i + (firstL - curL)) writer.write(" ")
         writer.write((lhv * num2[i].toString().toInt()).toString())
         writer.newLine()
     }
