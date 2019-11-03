@@ -894,7 +894,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.newLine()
 
     var l = 1
-    while (l < num1S.length && num1S.substring(0, l).toInt() <= rhv) l++
+    while (l < num1S.length && num1S.substring(0, l).toInt() < rhv) l++
     var curLhv = num1S.substring(0, l).toInt()
     var curLhvS = curLhv.toString()
     var first = true
