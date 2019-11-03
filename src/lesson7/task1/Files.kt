@@ -298,22 +298,35 @@ fun top20Words(inputName: String): Map<String, Int> {
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val dictionary2 = mutableMapOf<Char, String>()
+    val dictionary1 = mutableMapOf<Char, String>()
     for ((key, value) in dictionary) {
         val s = if (value.length > 1) value.substring(0, 1).toUpperCase() +
                 value.substring(1, value.length).toLowerCase()
         else value.toUpperCase()
-        dictionary2[key.toLowerCase()] = s
+        dictionary1[key.toUpperCase()] = s
+    }
+    val dictionary2 = mutableMapOf<Char, String>()
+    for ((key, value) in dictionary) {
+        if (dictionary1[key] == dictionary[key]!!.toLowerCase()) continue
+        dictionary2[key.toLowerCase()] = value.toLowerCase()
     }
     for (line in File(inputName).readLines()) {
-        val row = StringBuilder()
-        for (i in line.indices) {
-            val key = line[i]
-            if (key.isUpperCase()) {
-                row.append(dictionary2[key.toLowerCase()] ?: key)
-            } else row.append((dictionary2[key.toLowerCase()] ?: key.toString()).toLowerCase())
+        var row = line
+        for ((key) in dictionary2) {
+            for (match in key.toString().toRegex().findAll(line)) {
+                val s = match.value
+                row = row.replace(s, dictionary2[key]!!)
+            }
         }
-        writer.write(row.toString())
+
+        for ((key) in dictionary1) {
+            for (match in key.toString().toRegex().findAll(line)) {
+                val s = match.value
+                row = row.replace(s, dictionary1[key]!!)
+            }
+        }
+
+        writer.write(row)
         writer.newLine()
     }
     writer.close()

@@ -213,13 +213,13 @@ Basic, Ruby, Swift.
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
 
-//        transliterate(
-//            "\n",
-//            mapOf('\n' to "m"),
-//            "temp.txt"
-//        )
-//        assertFileContent("temp.txt", "m")
-//        File("temp.txt").delete()
+        transliterate(
+            "input/myTransliterate.txt",
+            mapOf('\n' to "m"),
+            "temp.txt"
+        )
+        assertFileContent("temp.txt", "m")
+        File("temp.txt").delete()
     }
 
     @Test
