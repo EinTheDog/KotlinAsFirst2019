@@ -213,13 +213,13 @@ Basic, Ruby, Swift.
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
 
-        transliterate(
-            "input/myTransliterate.txt",
-            mapOf('\n' to "m"),
-            "temp.txt"
-        )
-        assertFileContent("temp.txt", "m")
-        File("temp.txt").delete()
+//        transliterate(
+//            "input/myTransliterate.txt",
+//            mapOf('\n' to "m"),
+//            "temp.txt"
+//        )
+//        assertFileContent("temp.txt", "m")
+//        File("temp.txt").delete()
     }
 
     @Test
@@ -454,28 +454,6 @@ Basic, Ruby, Swift.
              """
         )
 
-        test(
-            168567,
-            1,
-            """
-              99999 | 1
-             -9       99999
-             --
-              09
-              -9
-              --
-               09
-               -9
-               --
-                09
-                -9
-                --
-                 09
-                 -9
-                 --
-                  0
-             """
-        )
 
 
         File("temp.txt").delete()

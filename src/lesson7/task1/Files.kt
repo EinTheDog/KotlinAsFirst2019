@@ -407,15 +407,15 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -431,13 +431,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     writer.newLine()
     var emptyLinesEx = false
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) emptyLinesEx =true
+        if (line.isEmpty()) emptyLinesEx = true
     }
-    if (emptyLinesEx){
-        stack.add("<p>")
-        writer.write("<p>")
-        writer.newLine()
-    }
+    stack.add("<p>")
+    writer.write("<p>")
+    writer.newLine()
     for (line in File(inputName).readLines()) {
         if (line.isEmpty()) {
             writer.write("</p><p>")
@@ -482,11 +480,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         writer.newLine()
     }
-    if (emptyLinesEx){
-        stack.remove("<p>")
-        writer.write("</p>")
-        writer.newLine()
-    }
+    stack.remove("<p>")
+    writer.write("</p>")
+    writer.newLine()
     stack.remove(stack.last())
     writer.write("</body>")
     writer.newLine()
@@ -529,67 +525,67 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <ul>
-      <li>
-        Утка по-пекински
-        <ul>
-          <li>Утка</li>
-          <li>Соус</li>
-        </ul>
-      </li>
-      <li>
-        Салат Оливье
-        <ol>
-          <li>Мясо
-            <ul>
-              <li>
-                  Или колбаса
-              </li>
-            </ul>
-          </li>
-          <li>Майонез</li>
-          <li>Картофель</li>
-          <li>Что-то там ещё</li>
-        </ol>
-      </li>
-      <li>Помидоры</li>
-      <li>
-        Фрукты
-        <ol>
-          <li>Бананы</li>
-          <li>
-            Яблоки
-            <ol>
-              <li>Красные</li>
-              <li>Зелёные</li>
-            </ol>
-          </li>
-        </ol>
-      </li>
-    </ul>
-  </body>
+<body>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>
+Или колбаса
+</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>
+Фрукты
+<ol>
+<li>Бананы</li>
+<li>
+Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -637,9 +633,9 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
             stack.add("<li>")
             writer.write("<li>")
             writer.newLine()
-            writer.write(line.filter { it != '*' && !it.isDigit() && it != '.'}.trim())
+            writer.write(line.filter { it != '*' && !it.isDigit() && it != '.' }.trim())
         } else {
-            writer.write("<li>${line.filter { it != '*' && !it.isDigit() && it != '.'}.trim()}</li>")
+            writer.write("<li>${line.filter { it != '*' && !it.isDigit() && it != '.' }.trim()}</li>")
         }
     }
     while (stack.size > 2) {
@@ -691,9 +687,9 @@ fun markdownToHtml(inputName: String, outputName: String) {
 
     var emptyLinesEx = false
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) emptyLinesEx =true
+        if (line.isEmpty()) emptyLinesEx = true
     }
-    if (emptyLinesEx){
+    if (emptyLinesEx) {
         stack1.add("<p>")
         writer.write("<p>")
         writer.newLine()
@@ -749,9 +745,9 @@ fun markdownToHtml(inputName: String, outputName: String) {
             writer.newLine()
         } else {
             nextLine = if (i < File(inputName).readLines().size - 1) File(inputName).readLines()[i + 1] else ""
-             indentPrev = indentCur
-             indentCur = (Regex(""" *""").find(curLine)?.value ?: "").length
-             indentNext = (Regex(""" *""").find(nextLine)?.value ?: "").length
+            indentPrev = indentCur
+            indentCur = (Regex(""" *""").find(curLine)?.value ?: "").length
+            indentNext = (Regex(""" *""").find(nextLine)?.value ?: "").length
             if (isList && indentCur > indentPrev) {
                 val s = if (curLine.trim()[0] == '*') "<ul>" else "<ol>"
                 stack2.add(s)
@@ -785,7 +781,7 @@ fun markdownToHtml(inputName: String, outputName: String) {
             }
         }
     }
-    if (emptyLinesEx){
+    if (emptyLinesEx) {
         stack1.remove("<p>")
         writer.write("</p>")
         writer.newLine()
@@ -816,23 +812,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -882,16 +878,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
