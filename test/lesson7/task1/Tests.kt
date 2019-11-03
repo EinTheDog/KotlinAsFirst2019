@@ -115,6 +115,12 @@ Basic, Ruby, Swift.
         )
         File("temp.txt").delete()
 
+        centerFile("input/myCenter1", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            """ааб"""
+        )
+        File("temp.txt").delete()
     }
 
     @Test
@@ -206,6 +212,14 @@ Basic, Ruby, Swift.
         )
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
+
+//        transliterate(
+//            "\n",
+//            mapOf('\n' to "m"),
+//            "temp.txt"
+//        )
+//        assertFileContent("temp.txt", "m")
+//        File("temp.txt").delete()
     }
 
     @Test
@@ -236,6 +250,16 @@ Basic, Ruby, Swift.
         assertEquals(expected, result)
 
         File("temp.html").delete()
+
+    }
+
+    private fun checkHtmlSimpleExample2() {
+        val result = File("temp.html").readText().replace(Regex("[\\s\\n\\t]"), "")
+        val expected = File("input/myExpected").toString().trimIndent().replace(Regex("[\\s\\n\\t]"), "")
+        assertEquals(expected, result)
+
+        File("temp.html").delete()
+
     }
 
     @Test
@@ -366,6 +390,7 @@ Basic, Ruby, Swift.
         )
 
 
+
     }
 
     @Test
@@ -428,6 +453,7 @@ Basic, Ruby, Swift.
                   0
              """
         )
+
 
         File("temp.txt").delete()
     }

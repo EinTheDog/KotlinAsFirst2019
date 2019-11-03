@@ -827,7 +827,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val num1 = lhv.toString()
     val num2 = rhv.toString()
     val l = num2.length
-    val rowLength = l + ((lhv * num2[l - 1].toString().toInt()).toString()).length
+    val rowLength = ((lhv * rhv).toString()).length + 1
 
     for (j in 1..(rowLength - num1.length)) writer.write(" ")
     writer.write(num1)
@@ -897,13 +897,14 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     while (l < num1S.length && num1S.substring(0, l).toInt() <= rhv) l++
     var curLhv = num1S.substring(0, l).toInt()
     var curLhvS = curLhv.toString()
+    var first = true
     do {
         var k = 0
         while (rhv * (k + 1) <= curLhv) k++
         for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
         writer.write("-${rhv * k}")
 
-        if (indent + (curLhvS.length - (rhv * k).toString().length) == 1) {
+        if (first) {
             for (i in "-${rhv * k}".length.." $num1S |".length) writer.write(" ")
             writer.write((lhv / rhv).toString())
         }
@@ -925,6 +926,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
         writer.write(curLhvS)
         writer.newLine()
+        first = false
     } while (lhv1 > rhv)
     writer.close()
 }
