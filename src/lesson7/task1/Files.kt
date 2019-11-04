@@ -311,7 +311,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         if (dictionary1[key] == dictionary[key]!!.toLowerCase()) continue
         dictionary2[key.toLowerCase()] = value.toLowerCase()
     }
-    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*')
+    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')')
     for (line in File(inputName).readLines()) {
         var row = line
         for ((key) in dictionary2) {
@@ -903,31 +903,36 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var lhv1 = lhv
     val num1S = lhv.toString()
     val num2S = rhv.toString()
-    var indent = 1
+    var indent = 0
     val writer = File(outputName).bufferedWriter()
 
     var l = 1
     while (l < num1S.length && num1S.substring(0, l).toInt() < rhv) l++
     var curLhv = num1S.substring(0, l).toInt()
     var curLhvS = curLhv.toString()
-
-    var k = 0
-    fun writeDivPart1() {
-        while (rhv * (k + 1) <= curLhv) k++
-        for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
-    }
-    writeDivPart1()
+    var k = (lhv / rhv).toString()[0].toString().toInt()
     if (curLhvS.length < "-${rhv * k}".length) writer.write(" $num1S | $num2S")
     else writer.write("$num1S | $num2S")
     writer.newLine()
+    var spDash = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
+    val firstMinusInd = if ("-${rhv * k}".length > curLhvS.length) 1 else 0
+    var dif = curLhvS.length - (rhv * k).toString().length
+    var substL = 0
+    fun writeDivPart1() {
+        for (i in 1 until indent + firstMinusInd + dif) {
+            writer.write(" ")
+            substL++
+        }
+    }
+    writeDivPart1()
     writer.write("-${rhv * k}")
-    for (i in "-${rhv * k}".length.." $num1S |".length) writer.write(" ")
+    substL += "-${rhv * k}".length
+    for (i in substL until num1S.length + firstMinusInd + 3) writer.write(" ")
     writer.write((lhv / rhv).toString())
     writer.newLine()
-    var sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
     fun writeDivPart2() {
-        for (i in 1 until indent + sp) writer.write(" ")
-        for (i in sp..curLhvS.length) writer.write("-")
+        for (i in 1 until indent + firstMinusInd + spDash) writer.write(" ")
+        for (i in spDash..curLhvS.length) writer.write("-")
         writer.newLine()
     }
     writeDivPart2()
@@ -936,7 +941,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         curLhv -= rhv * k
         curLhvS = curLhv.toString()
         lhv1 -= rhv * k * 10.0.pow(num1S.length - l).toInt()
-        for (i in 1..indent) writer.write(" ")
+        for (i in 1..indent + firstMinusInd) writer.write(" ")
         l++
         if (l <= num1S.length) {
             curLhv = curLhv * 10 + num1S[l - 1].toString().toInt()
@@ -946,14 +951,17 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.newLine()
     }
     writeDivPart3()
+    var j = 1
     while (l <= num1S.length) {
-        k = 0
+        k = (lhv / rhv).toString()[j].toString().toInt()
+        spDash = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
+        dif = curLhvS.length - (rhv * k).toString().length
         writeDivPart1()
         writer.write("-${rhv * k}")
         writer.newLine()
-        sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
         writeDivPart2()
         writeDivPart3()
+        j++
     }
     writer.close()
 }
