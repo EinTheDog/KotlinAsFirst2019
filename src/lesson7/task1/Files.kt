@@ -135,7 +135,7 @@ fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var max = 0
     for (line in File(inputName).readLines()) {
-        if (line.trim().length > max) max = line.length
+        if (line.trim().length > max) max = line.trim().length
     }
     for (line in File(inputName).readLines()) {
         val line1 = line.trim()
@@ -195,10 +195,8 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             writer.newLine()
             continue
         }
-        for (o in list) {
-            if (o.isEmpty()) list.remove(o)
-            o.trim()
-        }
+        for (o in list) o.trim()
+        while ("" in list) list.remove("")
         var l = list.joinToString("").length
         var i = 0
         while (l < max) {
@@ -908,24 +906,25 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     while (l < num1S.length && num1S.substring(0, l).toInt() < rhv) l++
     var curLhv = num1S.substring(0, l).toInt()
     var curLhvS = curLhv.toString()
-    var first = true
-    do {
-        var k = 0
+
+    var k = 0
+    fun writeDivPart1() {
         while (rhv * (k + 1) <= curLhv) k++
         for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
         writer.write("-${rhv * k}")
-
-        if (first) {
-            for (i in "-${rhv * k}".length.." $num1S |".length) writer.write(" ")
-            writer.write((lhv / rhv).toString())
-        }
-        writer.newLine()
-
-        val sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
+    }
+    writeDivPart1()
+    for (i in "-${rhv * k}".length.." $num1S |".length) writer.write(" ")
+    writer.write((lhv / rhv).toString())
+    writer.newLine()
+    var sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
+    fun writeDivPart2() {
         for (i in 1 until indent + sp) writer.write(" ")
         for (i in sp..curLhvS.length) writer.write("-")
         writer.newLine()
-
+    }
+    writeDivPart2()
+    fun writeDivPart3() {
         indent += curLhvS.length - (curLhv - rhv * k).toString().length
         curLhv -= rhv * k
         curLhvS = curLhv.toString()
@@ -938,8 +937,16 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
         writer.write(curLhvS)
         writer.newLine()
-        first = false
-    } while (lhv1 > rhv)
+    }
+    writeDivPart3()
+    while (l <= num1S.length) {
+        k = 0
+        writeDivPart1()
+        writer.newLine()
+        sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
+        writeDivPart2()
+        writeDivPart3()
+    }
     writer.close()
 }
 
