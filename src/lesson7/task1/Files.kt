@@ -311,10 +311,12 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         if (dictionary1[key] == dictionary[key]!!.toLowerCase()) continue
         dictionary2[key.toLowerCase()] = value.toLowerCase()
     }
+    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*')
     for (line in File(inputName).readLines()) {
         var row = line
         for ((key) in dictionary2) {
-            for (match in key.toString().toRegex().findAll(line)) {
+            val fixedKey = if (key in exceptSimbols) "\\" + key.toString() else key.toString()
+            for (match in fixedKey.toRegex().findAll(line)) {
                 val s = match.value
                 row = row.replace(s, dictionary2[key]!!)
             }
@@ -435,12 +437,16 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         if (line.isEmpty()) emptyLinesEx = true
     }
     writer.write("<p>")
+    stack.add("<p>")
     writer.newLine()
+    var emptyPar = true
     for (line in File(inputName).readLines()) {
         if (line.isEmpty()) {
-            writer.write("</p><p>")
+            if (!emptyPar) writer.write("</p><p>")
+            emptyPar = true
             continue
         }
+        emptyPar = false
         var i = 0
         while (i < line.length) {
             if (line[i] == '*') {
@@ -480,6 +486,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         writer.newLine()
     }
+    stack.remove("<p>")
     writer.write("</p>")
     writer.newLine()
     stack.remove(stack.last())
@@ -899,9 +906,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var indent = 1
     val writer = File(outputName).bufferedWriter()
 
-    writer.write(" $num1S | $num2S")
-    writer.newLine()
-
     var l = 1
     while (l < num1S.length && num1S.substring(0, l).toInt() < rhv) l++
     var curLhv = num1S.substring(0, l).toInt()
@@ -911,9 +915,12 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     fun writeDivPart1() {
         while (rhv * (k + 1) <= curLhv) k++
         for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
-        writer.write("-${rhv * k}")
     }
     writeDivPart1()
+    if (curLhvS.length < "-${rhv * k}".length) writer.write(" $num1S | $num2S")
+    else writer.write("$num1S | $num2S")
+    writer.newLine()
+    writer.write("-${rhv * k}")
     for (i in "-${rhv * k}".length.." $num1S |".length) writer.write(" ")
     writer.write((lhv / rhv).toString())
     writer.newLine()
@@ -942,6 +949,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     while (l <= num1S.length) {
         k = 0
         writeDivPart1()
+        writer.write("-${rhv * k}")
         writer.newLine()
         sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
         writeDivPart2()
