@@ -135,7 +135,7 @@ fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var max = 0
     for (line in File(inputName).readLines()) {
-        if (line.length > max) max = line.length
+        if (line.trim().length > max) max = line.length
     }
     for (line in File(inputName).readLines()) {
         val line1 = line.trim()
@@ -195,7 +195,10 @@ fun alignFileByWidth(inputName: String, outputName: String) {
             writer.newLine()
             continue
         }
-        for (o in list) o.trim()
+        for (o in list) {
+            if (o.isEmpty()) list.remove(o)
+            o.trim()
+        }
         var l = list.joinToString("").length
         var i = 0
         while (l < max) {
@@ -433,7 +436,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         if (line.isEmpty()) emptyLinesEx = true
     }
-    stack.add("<p>")
     writer.write("<p>")
     writer.newLine()
     for (line in File(inputName).readLines()) {
@@ -480,7 +482,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
         writer.newLine()
     }
-    stack.remove("<p>")
     writer.write("</p>")
     writer.newLine()
     stack.remove(stack.last())
@@ -849,15 +850,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     for (j in 1..rowLength) writer.write("-")
     writer.newLine()
 
-    for (j in 0 until l) writer.write(" ")
-    writer.write((lhv * num2[l - 1].toString().toInt()).toString())
     val firstL = (lhv * num2[l - 1].toString().toInt()).toString().length
+    for (j in 0 until rowLength - firstL) writer.write(" ")
+    writer.write((lhv * num2[l - 1].toString().toInt()).toString())
     writer.newLine()
 
     for (i in l - 2 downTo 0) {
+        val ind = l - i
         var curL = (lhv * num2[i].toString().toInt()).toString().length
         writer.write("+")
-        for (j in 0 until i + (firstL - curL)) writer.write(" ")
+        for (j in 0 until rowLength - ind - curL) writer.write(" ")
         writer.write((lhv * num2[i].toString().toInt()).toString())
         writer.newLine()
     }
@@ -919,8 +921,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
         writer.newLine()
 
-        for (i in 1 until indent + (curLhvS.length - (rhv * k).toString().length)) writer.write(" ")
-        for (i in 1.."-${rhv * k}".length) writer.write("-")
+        val sp = if ("-${rhv * k}".length > curLhvS.length) 0 else 1
+        for (i in 1 until indent + sp) writer.write(" ")
+        for (i in sp..curLhvS.length) writer.write("-")
         writer.newLine()
 
         indent += curLhvS.length - (curLhv - rhv * k).toString().length

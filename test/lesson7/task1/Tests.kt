@@ -118,9 +118,10 @@ Basic, Ruby, Swift.
         centerFile("input/myCenter1", "temp.txt")
         assertFileContent(
             "temp.txt",
-            """ааб"""
+            """бааП / баап"""
         )
         File("temp.txt").delete()
+
     }
 
     @Test
@@ -150,6 +151,12 @@ Basic, Ruby, Swift.
         )
         File("temp.txt").delete()
 
+        alignFileByWidth("input/myAlignFileByWidth1.txt", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            """ба;  БА ба"""
+        )
+        File("temp.txt").delete()
     }
 
     @Test
@@ -389,7 +396,18 @@ Basic, Ruby, Swift.
              """
         )
 
-
+//        test(
+//            2,
+//            26905,
+//            """
+//              12345
+//             *    6
+//             ------
+//              74070
+//             ------
+//              74070
+//             """
+//        )
 
     }
 
@@ -453,6 +471,18 @@ Basic, Ruby, Swift.
                   0
              """
         )
+
+//        test(
+//            56378,
+//            62493,
+//            """
+//              2 | 20
+//             -0   0
+//             --
+//              2
+//             """
+//        )
+
 
 
 
