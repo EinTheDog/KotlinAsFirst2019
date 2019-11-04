@@ -472,7 +472,7 @@ Basic, Ruby, Swift.
              """
         )
 
-        test(
+/*        test(
             21788,
             24464,
             """
@@ -481,7 +481,7 @@ Basic, Ruby, Swift.
              --
               2
              """
-        )
+        )*/
 
 
 
