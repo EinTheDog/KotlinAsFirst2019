@@ -75,11 +75,10 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val list1 = str.split(" ")
-    val list2 = mutableListOf<Int>()
     if (list1.size != 3) return ""
     try {
-        list2 += list1[0].toInt()
-        list2 += when (list1[1]) {
+        val day = list1[0].toInt()
+        val month = when (list1[1]) {
             "января" -> 1
             "февраля" -> 2
             "марта" -> 3
@@ -94,11 +93,11 @@ fun dateStrToDigit(str: String): String {
             "декабря" -> 12
             else -> -1
         }
-        list2 += list1[2].toInt()
-        return if (list2[1] == -1 || list2[0] > lesson2.task2.daysInMonth(list2[1], list2[2])) {
+        val year = list1[2].toInt()
+        return if (month == -1 || day > lesson2.task2.daysInMonth(month, year)) {
             ""
         } else {
-            format("%02d.%02d.%d", list2[0], list2[1], list2[2])
+            format("%02d.%02d.%d", day, month, year)
         }
     } catch (e: java.lang.NumberFormatException) {
         return ""
@@ -172,10 +171,10 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    val list = listOf<Char>('+', '-', '(', ')', ' ')
+    val list = listOf('+', '-', '(', ')', ' ')
     if (phone.any { it !in list && !it.isDigit() }) return ""
     val phone1 = phone.filter { it != ' ' && it != '-' }
-    val ans: String? = if (phone1.contains('(') || phone1.contains(')')) {
+    val ans = if (phone1.contains('(') || phone1.contains(')')) {
         Regex("""\+?(\d)*\((\d)+\)(\d)+""").find(phone1)?.value
     } else {
         Regex("""\+?(\d)+""").find(phone1)?.value
@@ -194,9 +193,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    for (o in jumps) {
-        if (!o.isDigit() && o != '%' && o != ' ' && o != '-') return -1
-    }
+    if (Regex("""[^ 0123456789%-]""").find(jumps) != null) return -1
     val str = jumps.filter { it.isDigit() || it == ' ' }
     val list = str.split(' ')
     var best = -1
@@ -296,26 +293,12 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    var i = 0
-    fun findWord(): String {
-        val word = StringBuilder()
-        while (i < str.length && str[i] != ' ') {
-            word.append(str[i].toLowerCase())
-            i++
-        }
-        return word.toString()
-    }
-
-    var prev = findWord()
-    var cur: String
-    i++
-    while (i < str.length) {
-        cur = findWord()
-        if (cur == prev) {
-            return (i - 1 - 2 * cur.length)
-        }
-        prev = cur
-        i++
+    val words = str.trim().split(" ")
+    var ind = 0
+    while (str[ind] == ' ') ind++
+    for (i in 1 until words.size) {
+        if (words[i].toLowerCase() == words[i - 1].toLowerCase()) return ind
+        ind += words[i - 1].length + 1
     }
     return -1
 }

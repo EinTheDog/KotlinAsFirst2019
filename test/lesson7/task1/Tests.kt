@@ -262,7 +262,7 @@ Basic, Ruby, Swift.
 
     private fun checkHtmlSimpleExample2() {
         val result = File("temp.html").readText().replace(Regex("[\\s\\n\\t]"), "")
-        val expected = File("input/myExpected").toString().trimIndent().replace(Regex("[\\s\\n\\t]"), "")
+        val expected = File("input/mySimpleHtml1.md").readText().trimIndent().replace(Regex("[\\s\\n\\t]"), "")
         assertEquals(expected, result)
 
         File("temp.html").delete()
@@ -274,6 +274,9 @@ Basic, Ruby, Swift.
     fun markdownToHtmlSimple() {
         markdownToHtmlSimple("input/markdown_simple.md", "temp.html")
         checkHtmlSimpleExample()
+
+        markdownToHtmlSimple("input/mySimpleHtmlText1.md", "temp.html")
+        checkHtmlSimpleExample2()
     }
 
     private fun checkHtmlListsExample() {
