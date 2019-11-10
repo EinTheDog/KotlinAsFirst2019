@@ -138,11 +138,8 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var max = 0
     val file = File(inputName).readLines()
-    for (line in file) {
-        if (line.trim().length > max) max = line.trim().length
-    }
+    var max = file.maxBy { it.trim().length }!!.trim().length
     for (line in file) {
         val line1 = line.trim()
         val fixedLine = StringBuilder()
@@ -186,11 +183,8 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var max = 0
     val file = File(inputName).readLines()
-    for (line in file) {
-        if (line.length > max) max = line.trim().length
-    }
+    var max = file.maxBy { it.trim().length }!!.trim().length
     for (line in file) {
         if (line == "") {
             writer.newLine()
@@ -255,10 +249,11 @@ fun top20Words(inputName: String): Map<String, Int> {
     }
     val list = allWords.toList().toMutableList()
     list.sortBy { it.second }
-    val top20 = mutableMapOf<String, Int>()
-    for (i in list.size - 1 downTo list.size - 20) {
+    //val top20 = mutableMapOf<String, Int>()
+    /*for (i in list.size - 1 downTo list.size - 20) {
         top20[list[i].first] = list[i].second
-    }
+    }*/
+    val top20 = allWords.toList().sortedBy { (key, value) -> value }.take(20).toMap()
     return top20
 }
 
@@ -299,33 +294,20 @@ fun top20Words(inputName: String): Map<String, Int> {
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val dictionary1 = mutableMapOf<Char, String>()
+    val myDictionary = mutableMapOf<Char, String>()
     for ((key, value) in dictionary) {
-        val s = if (value.length > 1) value.substring(0, 1).toUpperCase() +
-                value.substring(1, value.length).toLowerCase()
-        else value.toUpperCase()
-        dictionary1[key.toUpperCase()] = s
+        myDictionary[key.toLowerCase()] = value.toLowerCase()
+        myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
     }
-    val dictionary2 = mutableMapOf<Char, String>()
-    for ((key, value) in dictionary) {
-        if (dictionary1[key] == dictionary[key]!!.toLowerCase()) continue
-        dictionary2[key.toLowerCase()] = value.toLowerCase()
-    }
+
     val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')')
     for (line in File(inputName).readLines()) {
         var row = line
-        for ((key) in dictionary2) {
+        for ((key) in myDictionary) {
             val fixedKey = if (key in exceptSimbols) "\\" + key.toString() else key.toString()
             for (match in fixedKey.toRegex().findAll(line)) {
                 val s = match.value
-                row = row.replace(s, dictionary2[key]!!)
-            }
-        }
-
-        for ((key) in dictionary1) {
-            for (match in key.toString().toRegex().findAll(line)) {
-                val s = match.value
-                row = row.replace(s, dictionary1[key]!!)
+                row = row.replace(s, myDictionary[key]!!)
             }
         }
 
@@ -362,17 +344,11 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var words = listOf<String>()
-    var maxLength = 0
-    outer@ for (line in File(inputName).readLines()) {
-        val set = mutableSetOf<Char>()
-        for (o in line) {
-            if (o.toLowerCase() !in set) set.add(o.toLowerCase()) else continue@outer
-        }
-        if (line.length > maxLength) {
-            maxLength = line.length
-        }
-        words += line
+    for (line in File(inputName).readLines()) {
+        val set = line.toLowerCase().toSet()
+        if (set.size == line.length) words += line
     }
+    val maxLength = words.maxBy { it.length }!!.length
     words = words.filter { it.length == maxLength }
     writer.write(words.joinToString(separator = ", "))
     writer.close()
@@ -851,7 +827,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     writer.write(num2)
     writer.newLine()
 
-    for (j in 1..rowLength) writer.write("-")
+    writer.write("-".repeat(rowLength))
     writer.newLine()
 
     val firstL = (lhv * num2[l - 1].toString().toInt()).toString().length
@@ -861,7 +837,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 
     for (i in l - 2 downTo 0) {
         val ind = l - i
-        var curL = (lhv * num2[i].toString().toInt()).toString().length
+        val curL = (lhv * num2[i].toString().toInt()).toString().length
         writer.write("+")
         for (j in 0 until rowLength - ind - curL) writer.write(" ")
         writer.write((lhv * num2[i].toString().toInt()).toString())
