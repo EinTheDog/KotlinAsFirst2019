@@ -412,12 +412,14 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     stack.add("<p>")
     writer.newLine()
     var emptyPar = true
-    for (i in File(inputName).readLines().indices) {
-        val line = File(inputName).readLines()[i]
+
+    val file = File(inputName).readLines()
+    for (i in file.indices) {
+        val line = file[i]
         if (line.isEmpty()) {
             var j = i + 1
-            while (j < File(inputName).readLines().size && File(inputName).readLines()[j].isEmpty()) j ++
-            if (!emptyPar && j < File(inputName).readLines().size) writer.write("</p><p>")
+            while (j < file.size && file[j].isEmpty()) j++
+            if (!emptyPar && j < file.size) writer.write("</p><p>")
             emptyPar = true
             continue
         }
@@ -586,9 +588,10 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
     writer.newLine()
 
 
-    for (i in File(inputName).readLines().indices) {
-        val line = File(inputName).readLines()[i]
-        val nextLine = if (i < File(inputName).readLines().size - 1) File(inputName).readLines()[i + 1] else ""
+    val file = File(inputName).readLines()
+    for (i in file.indices) {
+        val line = file[i]
+        val nextLine = if (i < file.size - 1) file[i + 1] else ""
         indentPrev = indentCur
         indentCur = (Regex(""" *""").find(line)?.value ?: "").length
         indentNext = (Regex(""" *""").find(nextLine)?.value ?: "").length
@@ -718,14 +721,15 @@ fun markdownToHtml(inputName: String, outputName: String) {
         }
     }
 
-    for (i in File(inputName).readLines().indices) {
-        curLine = File(inputName).readLines()[i]
+    val file = File(inputName).readLines()
+    for (i in file.indices) {
+        curLine = file[i]
         isList = if (curLine.trim().length > 0) curLine.trim()[0] == '*' || curLine.trim()[0].isDigit() else false
         if (curLine.isEmpty()) {
             writer.write("</p><p>")
             writer.newLine()
         } else {
-            nextLine = if (i < File(inputName).readLines().size - 1) File(inputName).readLines()[i + 1] else ""
+            nextLine = if (i < file.size - 1) file[i + 1] else ""
             indentPrev = indentCur
             indentCur = (Regex(""" *""").find(curLine)?.value ?: "").length
             indentNext = (Regex(""" *""").find(nextLine)?.value ?: "").length

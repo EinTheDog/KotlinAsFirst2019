@@ -275,8 +275,8 @@ Basic, Ruby, Swift.
         markdownToHtmlSimple("input/markdown_simple.md", "temp.html")
         checkHtmlSimpleExample()
 
-        markdownToHtmlSimple("input/mySimpleHtmlText1.md", "temp.html")
-        checkHtmlSimpleExample2()
+        /*markdownToHtmlSimple("input/mySimpleHtmlText1.md", "temp.html")
+        checkHtmlSimpleExample2()*/
     }
 
     private fun checkHtmlListsExample() {
