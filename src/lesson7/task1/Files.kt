@@ -64,16 +64,18 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
         ans[o] = 0
     }
     for (line in File(inputName).readLines()) {
+        val fixedLine = line.replace(Regex("""\\n"""), "").toLowerCase()
+        if (fixedLine.isEmpty()) continue
         for (key in substrings) {
             val l = key.length
             var i = 0
-            while (i < line.length - l) {
-                val match= if(key !in exceptSimbols) key.toLowerCase().toRegex().find(line.toLowerCase(), i)
-                else ("\\${key.toLowerCase()}").toRegex().find(line.toLowerCase(), i)
+            while (i <= line.length - l) {
+                val match = if (key !in exceptSimbols) key.toLowerCase().toRegex().find(fixedLine, 0)
+                else ("\\${key.toLowerCase()}").toRegex().find(fixedLine, i)
                 if (match != null) {
                     i = match.range.first + 1
                     ans[key] = ans[key]!! + 1
-                } else i = line.length - l
+                } else i = line.length - l + 1
             }
         }
     }
@@ -139,7 +141,7 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val file = File(inputName).readLines()
-    var max = file.maxBy { it.trim().length }!!.trim().length
+    var max = if (file.isNotEmpty()) file.maxBy { it.trim().length }!!.trim().length else 0
     for (line in file) {
         val line1 = line.trim()
         val fixedLine = StringBuilder()
@@ -184,7 +186,7 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val file = File(inputName).readLines()
-    var max = file.maxBy { it.trim().length }!!.trim().length
+    var max = if (file.isNotEmpty()) file.maxBy { it.trim().length }!!.trim().length else 0
     for (line in file) {
         if (line == "") {
             writer.newLine()
@@ -300,7 +302,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
     }
 
-    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')')
+    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')', '{', '}')
     for (line in File(inputName).readLines()) {
         var row = line
         for ((key) in myDictionary) {
@@ -345,6 +347,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var words = listOf<String>()
     for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) continue
         val set = line.toLowerCase().toSet()
         if (set.size == line.length) words += line
     }
