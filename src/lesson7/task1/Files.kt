@@ -234,29 +234,22 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  */
 fun top20Words(inputName: String): Map<String, Int> {
     val allWords = mutableMapOf<String, Int>()
-    val reg = Regex("""[^а-я][^a-z]""")
+    val reg = Regex("""[^A-Za-zА-Яа-яЁё]""")
     for (line in File(inputName).readLines()) {
         val wordList = line.toLowerCase().trim().split(reg)
         for (word in wordList) {
             val fixedWord = word.filter { it.isLetter() }
-            if (fixedWord != "") allWords[fixedWord] = (allWords[fixedWord] ?: 0) + 1
+            if (fixedWord != "") allWords[fixedWord] = allWords.getOrPut(fixedWord, { 0 }) + 1
         }
     }
     if (allWords.size <= 20) return allWords
-    var max = 0
-    for (value in allWords.values) {
-        if (max < value) {
-            max = value
-        }
-    }
     val list = allWords.toList().toMutableList()
     list.sortBy { it.second }
     //val top20 = mutableMapOf<String, Int>()
     /*for (i in list.size - 1 downTo list.size - 20) {
         top20[list[i].first] = list[i].second
     }*/
-    val top20 = allWords.toList().sortedBy { (key, value) -> value }.take(20).toMap()
-    return top20
+    return allWords.toList().sortedByDescending { (key, value) -> value }.take(20).toMap()
 }
 
 /**
@@ -302,7 +295,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
     }
 
-    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')', '{', '}')
+    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')', '{', '}', '\\')
     for (line in File(inputName).readLines()) {
         var row = line
         for ((key) in myDictionary) {
@@ -351,7 +344,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
         val set = line.toLowerCase().toSet()
         if (set.size == line.length) words += line
     }
-    val maxLength = words.maxBy { it.length }!!.length
+    val maxLength = if (words.isNotEmpty()) words.maxBy { it.length }!!.length else 0
     words = words.filter { it.length == maxLength }
     writer.write(words.joinToString(separator = ", "))
     writer.close()

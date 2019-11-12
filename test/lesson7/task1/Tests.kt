@@ -60,7 +60,7 @@ Basic, Ruby, Swift.
     @Test
     @Tag("Normal")
     fun countSubstrings() {
-        /*assertEquals(
+        assertEquals(
             mapOf("РАЗНЫЕ" to 2, "ные" to 2, "Неряшливость" to 1, "е" to 49, "эволюция" to 0),
             countSubstrings("input/substrings_in1.txt", listOf("РАЗНЫЕ", "ные", "Неряшливость", "е", "эволюция"))
         )
@@ -71,7 +71,7 @@ Basic, Ruby, Swift.
         assertEquals(
             mapOf("--" to 4, "ее" to 2, "животное" to 2, "." to 2),
             countSubstrings("input/substrings_in2.txt", listOf("--", "ее", "животное", "."))
-        )*/
+        )
         assertEquals(
             mapOf("ac" to 1),
             countSubstrings("input/mySubstring.txt", listOf("ac"))
@@ -123,6 +123,13 @@ Basic, Ruby, Swift.
         assertFileContent(
             "temp.txt",
             """бааП / баап"""
+        )
+        File("temp.txt").delete()
+
+        centerFile("input/empty.txt", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            """"""
         )
         File("temp.txt").delete()
 
@@ -224,13 +231,13 @@ Basic, Ruby, Swift.
         assertFileContent("temp.txt", "Zzdrавствуy,\nmyyr!!!")
         File("temp.txt").delete()
 
-//        transliterate(
-//            "input/myTransliterate.txt",
-//            mapOf('\n' to "m"),
-//            "temp.txt"
-//        )
-//        assertFileContent("temp.txt", "m")
-//        File("temp.txt").delete()
+        transliterate(
+            "input/myTransliterate.txt",
+            mapOf('\n' to "m"),
+            "temp.txt"
+        )
+        assertFileContent("temp.txt", "m")
+        File("temp.txt").delete()
     }
 
     @Test
@@ -238,6 +245,10 @@ Basic, Ruby, Swift.
     fun chooseLongestChaoticWord() {
         chooseLongestChaoticWord("input/chaotic_in1.txt", "temp.txt")
         assertFileContent("temp.txt", "Карминовый, Некрасивый")
+        File("temp.txt").delete()
+
+        chooseLongestChaoticWord("input/empty.txt", "temp.txt")
+        assertFileContent("temp.txt", "")
         File("temp.txt").delete()
     }
 
