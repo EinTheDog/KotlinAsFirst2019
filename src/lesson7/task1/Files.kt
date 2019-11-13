@@ -142,7 +142,7 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val file = File(inputName).readLines()
-    var max = if (file.isNotEmpty()) file.maxBy { it.trim().length }!!.trim().length else 0
+    val max = if (file.isNotEmpty()) file.maxBy { it.trim().length }!!.trim().length else 0
     for (line in file) {
         val line1 = line.trim()
         val fixedLine = StringBuilder()
@@ -187,7 +187,7 @@ fun centerFile(inputName: String, outputName: String) {
 fun alignFileByWidth(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val file = File(inputName).readLines()
-    var max = if (file.isNotEmpty()) file.maxBy { it.trim().length }!!.trim().length else 0
+    val max = if (file.isNotEmpty()) file.maxBy { it.trim().length }!!.trim().length else 0
     for (line in file) {
         if (line == "") {
             writer.newLine()
@@ -293,7 +293,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val myDictionary = mutableMapOf<Char, String>()
     for ((key, value) in dictionary) {
         myDictionary[key.toLowerCase()] = value.toLowerCase()
-        myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
+        if (myDictionary[key.toUpperCase()] == null) myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
     }
 
     val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')', '{', '}', '\\')
