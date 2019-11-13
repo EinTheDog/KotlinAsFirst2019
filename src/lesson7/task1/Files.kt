@@ -64,13 +64,13 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
         ans[o] = 0
     }
     for (line in File(inputName).readLines()) {
-        val fixedLine = line.replace(Regex("""\\n"""), "").toLowerCase()
+        val fixedLine = line.toLowerCase()
         if (fixedLine.isEmpty()) continue
         for (key in substrings) {
             val l = key.length
             var i = 0
             while (i <= line.length - l) {
-                val match = if (key !in exceptSimbols) key.toLowerCase().toRegex().find(fixedLine, 0)
+                val match = if (key !in exceptSimbols) key.toLowerCase().toRegex().find(fixedLine, i)
                 else ("\\${key.toLowerCase()}").toRegex().find(fixedLine, i)
                 if (match != null) {
                     i = match.range.first + 1
