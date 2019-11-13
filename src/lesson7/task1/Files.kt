@@ -296,18 +296,17 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         if (myDictionary[key.toUpperCase()] == null) myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
     }
 
-    val exceptSimbols = listOf<Char>('?', '[', ']', '^', '.', '$', '+', '*', '(', ')', '{', '}', '\\')
     for (line in File(inputName).readLines()) {
-        var row = line
-        for ((key) in myDictionary) {
-            val fixedKey = if (key in exceptSimbols) "\\" + key.toString() else key.toString()
-            for (match in fixedKey.toRegex().findAll(line)) {
-                val s = match.value
-                row = row.replace(s, myDictionary[key]!!)
+        var row = StringBuilder()
+        for (letter in line) {
+            if (myDictionary[letter] == null) {
+                row.append(letter)
+            } else {
+                row.append(myDictionary[letter])
             }
         }
 
-        writer.write(row)
+        writer.write(row.toString())
         writer.newLine()
     }
     writer.close()
