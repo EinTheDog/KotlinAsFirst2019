@@ -60,13 +60,14 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val exceptSimbols = listOf<String>("?", "[", "]", "^", ".", "$", "+", "*", "(", ")")
     val ans = mutableMapOf<String, Int>()
-    for (o in substrings) {
+    val subSet = substrings.toSet()
+    for (o in subSet) {
         ans[o] = 0
     }
     for (line in File(inputName).readLines()) {
         val fixedLine = line.toLowerCase()
         if (fixedLine.isEmpty()) continue
-        for (key in substrings) {
+        for (key in subSet) {
             val l = key.length
             var i = 0
             while (i <= line.length - l) {
