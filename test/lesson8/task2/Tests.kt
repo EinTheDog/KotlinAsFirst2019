@@ -39,6 +39,7 @@ class Tests {
         assertEquals(Square(6, 8), square("f8"))
         assertEquals(Square(4, 1), square("d1"))
         assertThrows(IllegalArgumentException::class.java) { square("") }
+        assertThrows(IllegalArgumentException::class.java) { square("a") }
     }
 
     @Test
@@ -78,6 +79,7 @@ class Tests {
         assertEquals(0, bishopMoveNumber(square("d4"), square("d4")))
         assertEquals(1, bishopMoveNumber(square("a3"), square("e7")))
         assertEquals(2, bishopMoveNumber(square("c1"), square("c7")))
+        assertThrows(IllegalArgumentException::class.java) { bishopMoveNumber(Square(0, 0), Square(0, 0)) }
     }
 
     private fun List<Square>.assertBishopTrajectory(start: Square, end: Square, length: Int) {
