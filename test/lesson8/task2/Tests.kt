@@ -1,5 +1,6 @@
 package lesson8.task2
 
+import lesson6.task1.plusMinus
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -37,7 +38,7 @@ class Tests {
         assertEquals(Square(5, 5), square("e5"))
         assertEquals(Square(6, 8), square("f8"))
         assertEquals(Square(4, 1), square("d1"))
-        assertEquals(Square(4, 1), square(""))
+        assertThrows(IllegalArgumentException::class.java) { square("") }
     }
 
     @Test

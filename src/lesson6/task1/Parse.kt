@@ -254,6 +254,9 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     require(expression.isNotEmpty())
+    require(Regex("""\d \d""").find(expression) == null)
+    require((Regex("""\+ \+""")).find(expression) == null)
+    require((Regex("""- -""")).find(expression) == null)
     for (o in expression) {
         require(!(!o.isDigit() && o != ' ' && o != '+' && o != '-'))
     }
@@ -267,20 +270,16 @@ fun plusMinus(expression: String): Int {
         return numStr.toInt()
     }
 
-    try {
-        var ans = 0
-        ans += findNumber()
-        while (i < expression.length) {
-            i++
-            val ch = expression[i]
-            i += 2
-            val x = findNumber()
-            if (ch == '+') ans += x else ans -= x
-        }
-        return ans
-    } catch (e: IllegalArgumentException) {
-        throw e
+    var ans = 0
+    ans += findNumber()
+    while (i < expression.length) {
+        i++
+        val ch = expression[i]
+        i += 2
+        val x = findNumber()
+        if (ch == '+') ans += x else ans -= x
     }
+    return ans
 }
 
 /**
