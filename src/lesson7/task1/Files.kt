@@ -305,6 +305,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 row.append(myDictionary[letter])
             }
         }
+        if (myDictionary['\n'] != null) row.append(myDictionary['\n'])
 
         writer.write(row.toString())
         writer.newLine()

@@ -199,6 +199,7 @@ fun lineBySegment(s: Segment): Line {
 fun lineByPoints(a: Point, b: Point): Line {
     var angle = atan((a.y - b.y) / (a.x - b.x))
     if (angle < 0) angle += PI
+    if (angle >= PI) angle -= PI
     val b = abs(a.y * cos(angle) - a.x * sin(angle))
     return (Line(a, angle))
 }
@@ -212,7 +213,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     var angle = atan((a.y - b.y) / (a.x - b.x))
     if (angle < 0) angle += PI
     if (angle + PI / 2 > PI) angle -= PI / 2 else angle += PI / 2
-    if (angle > PI - 1e-5) angle -= PI
+    if (angle >= PI) angle -= PI
     val c = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
     return (Line(c, angle))
 }
@@ -264,5 +265,44 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
+fun minContainingCircle(vararg points: Point): Circle {
+    var minR = -1.0
+    var ans = Circle(points[0], 0.0)
+
+    if (points.size == 1) return ans
+
+    for (i in 0 until points.size - 1) {
+        outer@ for (j in i + 1 until points.size) {
+            val circle = circleByDiameter(Segment(points[i], points[j]))
+            for (p in points) {
+                val a = !circle.contains(p)
+                if (!circle.contains(p)) continue@outer
+            }
+            if (minR == -1.0 || minR > circle.radius) {
+                minR = circle.radius
+                ans = circle
+            }
+        }
+    }
+
+    if (minR != -1.0) return ans
+
+    for (i in 0 until points.size - 2) {
+        for (j in i + 1 until points.size - 1) {
+            outer@ for (k in j + 1 until points.size) {
+                val circle = circleByThreePoints(points[i], points[j], points[k])
+                for (p in points) {
+                    val a = !circle.contains(points[k])
+                    if (!circle.contains(p)) continue@outer
+                }
+                if (minR == -1.0 || minR > circle.radius) {
+                    minR = circle.radius
+                    ans = circle
+                }
+            }
+        }
+    }
+
+    return ans
+}
 
