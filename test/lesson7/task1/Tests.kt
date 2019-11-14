@@ -239,7 +239,7 @@ Basic, Ruby, Swift.
         assertFileContent("temp.txt", "am")
         File("temp.txt").delete()
 
-        transliterate(
+       /* transliterate(
             "input/myTrans2.txt",
             mapOf(
                 's' to "xiT\\tf>GaL%",
@@ -255,6 +255,24 @@ Basic, Ruby, Swift.
             "temp.txt"
         )
         assertFileContent("temp.txt", "xit\\tf>gal%aaaaaio0:.2la")
+        File("temp.txt").delete()*/
+
+        transliterate(
+            "input/myTrans3.txt",
+            mapOf(
+                '쁕' to "xiT\\tf>GaL%",
+                'ﵟ' to "nE?0LN",
+                '\n' to "shoshdv",
+                '~' to "#OI.*Q\\n-%W",
+                '/' to "1QGf`4RE0P",
+                'X' to "",
+                'C' to "",
+                't' to "IO0:.2l",
+                ')' to "\\\\K\\nfbG2"
+            ),
+            "temp.txt"
+        )
+        assertFileContent("temp.txt", "a")
         File("temp.txt").delete()
     }
 

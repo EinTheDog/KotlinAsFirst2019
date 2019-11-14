@@ -295,8 +295,9 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         myDictionary[key.toLowerCase()] = value.toLowerCase()
         if (myDictionary[key.toUpperCase()] == null) myDictionary[key.toUpperCase()] = value.toLowerCase().capitalize()
     }
-
-    for (line in File(inputName).readLines()) {
+    val file = File(inputName).readLines()
+    for (i in file.indices) {
+        val line = file[i]
         var row = StringBuilder()
         for (letter in line) {
             if (myDictionary[letter] == null) {
@@ -305,7 +306,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 row.append(myDictionary[letter])
             }
         }
-        if (myDictionary['\n'] != null) row.append(myDictionary['\n'])
+        if (myDictionary['\n'] != null && (i < file.size - 1 || line == "")) row.append(myDictionary['\n'])
 
         writer.write(row.toString())
         writer.newLine()
