@@ -306,10 +306,14 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 row.append(myDictionary[letter])
             }
         }
-        if (myDictionary['\n'] != null && (i < file.size - 1 || line == "")) row.append(myDictionary['\n'])
-
-        writer.write(row.toString())
-        writer.newLine()
+        val a = myDictionary['\n'] != null && (i < file.size - 1 || line == "")
+        if (myDictionary['\n'] != null && (i < file.size - 1 || line == "")) {
+            row.append(myDictionary['\n'])
+            writer.write(row.toString())
+        } else {
+            writer.write(row.toString())
+            writer.newLine()
+        }
     }
     writer.close()
 }

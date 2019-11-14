@@ -257,6 +257,10 @@ fun plusMinus(expression: String): Int {
     require(Regex("""\d \d""").find(expression) == null)
     require((Regex("""\+ \+""")).find(expression) == null)
     require((Regex("""- -""")).find(expression) == null)
+    require((Regex("""^\+""")).find(expression) == null)
+    require((Regex("""^-""")).find(expression) == null)
+    require((Regex("""\+$""")).find(expression) == null)
+    require((Regex("""-$""")).find(expression) == null)
     for (o in expression) {
         require(!(!o.isDigit() && o != ' ' && o != '+' && o != '-'))
     }
