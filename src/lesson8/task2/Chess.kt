@@ -75,6 +75,8 @@ fun square(notation: String): Square {
  * Ладья может пройти через клетку (3, 3) или через клетку (6, 1) к клетке (6, 3).
  */
 fun rookMoveNumber(start: Square, end: Square): Int {
+    checkSquare(start)
+    checkSquare(end)
     return if (start.row == end.row && start.column == end.column) 0
     else if (start.row == end.row || start.column == end.column) 1
     else 2
@@ -295,7 +297,20 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightMoveNumber(start: Square, end: Square): Int {
+    val chessField = Graph()
+    for (i in 1..8) {
+        for (j in 1..8) {
+            chessField.addVertex("${'a' + 96 + i}$j")
+        }
+    }
+    for (i in 1..8) {
+        for (j in 1..8) {
+            if (i + 1 < 8 && j + 2 < 8) chessField.connect("${'a' + 96}$j", "${'a' + 96 + i + 1}${j + 2}")
+
+        }
+    }
+}
 
 /**
  * Очень сложная
