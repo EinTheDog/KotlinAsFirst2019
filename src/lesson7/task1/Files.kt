@@ -58,7 +58,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val exceptSimbols = listOf<String>("?", "[", "]", "^", ".", "$", "+", "*", "(", ")")
+    val exceptSimbols = listOf("?", "[", "]", "^", ".", "$", "+", "*", "(", ")")
     val ans = mutableMapOf<String, Int>()
     val subSet = substrings.toSet()
     for (o in subSet) {
@@ -98,7 +98,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val letters = setOf<Char>('ж', 'ч', 'ш', 'щ')
+    val letters = setOf('ж', 'ч', 'ш', 'щ')
     val ans = File(outputName).bufferedWriter()
     for (line in File(inputName).readLines()) {
         val fixedLine = StringBuilder()
@@ -298,7 +298,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val file = File(inputName).readLines()
     for (i in file.indices) {
         val line = file[i]
-        var row = StringBuilder()
+        val row = StringBuilder()
         for (letter in line) {
             if (myDictionary[letter] == null) {
                 row.append(letter)

@@ -207,6 +207,14 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
  * Пример: kingMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
+
+fun chooseNxtKngTurn(x1: Int, x2: Int, y1: Int, y2: Int):Pair<Int, Int> =
+    when {
+        abs(x2 - x1) > abs(y2 - y1) -> Pair(x1 + abs(x2 - x1) / (x2 - x1), y1)
+        abs(x2 - x1) < abs(y2 - y1) -> Pair(x1, y1 + abs(y2 - y1) / (y2 - y1))
+        else -> Pair(x1 + abs(x2 - x1) / (x2 - x1), y1 + abs(y2 - y1) / (y2 - y1))
+    }
+
 fun kingMoveNumber(start: Square, end: Square): Int {
     checkSquare(start)
     checkSquare(end)
@@ -214,20 +222,15 @@ fun kingMoveNumber(start: Square, end: Square): Int {
     var turns = 0
     var x1 = start.column
     var y1 = start.row
-    var x2 = end.column
-    var y2 = end.row
+    val x2 = end.column
+    val y2 = end.row
 
     if (x1 == x2 && y1 == y2) return turns
 
     while (abs(x2 - x1) > 1 || abs(y2 - y1) > 1) {
-        when {
-            abs(x2 - x1) > abs(y2 - y1) -> x1 += abs(x2 - x1) / (x2 - x1)
-            abs(x2 - x1) < abs(y2 - y1) -> y1 += abs(y2 - y1) / (y2 - y1)
-            else -> {
-                x1 += abs(x2 - x1) / (x2 - x1)
-                y1 += abs(y2 - y1) / (y2 - y1)
-            }
-        }
+        val newXY = chooseNxtKngTurn(x1, x2, y1, y2)
+        x1 = newXY.first
+        y1 = newXY.second
         turns++
     }
     turns++
@@ -254,20 +257,15 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
     ans.add(start)
     var x1 = start.column
     var y1 = start.row
-    var x2 = end.column
-    var y2 = end.row
+    val x2 = end.column
+    val y2 = end.row
 
     if (x1 == x2 && y1 == y2) return ans
 
     while (abs(x2 - x1) > 1 || abs(y2 - y1) > 1) {
-        when {
-            abs(x2 - x1) > abs(y2 - y1) -> x1 += abs(x2 - x1) / (x2 - x1)
-            abs(x2 - x1) < abs(y2 - y1) -> y1 += abs(y2 - y1) / (y2 - y1)
-            else -> {
-                x1 += abs(x2 - x1) / (x2 - x1)
-                y1 += abs(y2 - y1) / (y2 - y1)
-            }
-        }
+        val newXY = chooseNxtKngTurn(x1, x2, y1, y2)
+        x1 = newXY.first
+        y1 = newXY.second
         ans.add(Square(x1, y1))
     }
     ans.add(end)
@@ -297,19 +295,37 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
+fun connectVertcies (chessField: Graph) {
+    for (i in 0..7) {
+        for (j in 1..8) {
+            chessField.addVertex("${('a' + i)}$j")
+        }
+    }
+    for (i in 0..7) {
+        for (j in 1..8) {
+            if (i + 1 < 7) {
+                if (j + 2 < 8) chessField.connect("${'a' + i}$j", "${'a' + i + 1}${j + 2}")
+                if (j - 2 > 0) chessField.connect("${'a' + i}$j", "${'a' + i + 1}${j - 2}")
+            }
+            if (i + 2 < 7) {
+                if (j + 1 < 8) chessField.connect("${'a' + i}$j", "${'a' + i + 2}${j + 1}")
+                if (j - 1 > 0) chessField.connect("${'a' + i}$j", "${'a' + i + 2}${j - 1}")
+            }
+            if (i - 1 > 0) {
+                if (j + 2 < 8) chessField.connect("${'a' + i}$j", "${'a' + i - 1}${j + 2}")
+                if (j - 2 > 0) chessField.connect("${'a' + i}$j", "${'a' + i - 1}${j - 2}")
+            }
+            if (i - 2 > 0) {
+                if (j + 1 < 8) chessField.connect("${'a' + i}$j", "${'a' + i - 2}${j + 1}")
+                if (j - 1 > 0) chessField.connect("${'a' + i}$j", "${'a' + i - 2}${j - 1}")
+            }
+        }
+    }
+}
 fun knightMoveNumber(start: Square, end: Square): Int {
     val chessField = Graph()
-    for (i in 1..8) {
-        for (j in 1..8) {
-            chessField.addVertex("${'a' + 96 + i}$j")
-        }
-    }
-    for (i in 1..8) {
-        for (j in 1..8) {
-            if (i + 1 < 8 && j + 2 < 8) chessField.connect("${'a' + 96}$j", "${'a' + 96 + i + 1}${j + 2}")
-
-        }
-    }
+    connectVertcies(chessField)
+    return chessField.bfs(start.notation(), end.notation())
 }
 
 /**
@@ -332,4 +348,8 @@ fun knightMoveNumber(start: Square, end: Square): Int {
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun knightTrajectory(start: Square, end: Square): List<Square> {
+    val chessField = Graph()
+    connectVertcies(chessField)
+    return chessField.bfsWay(start.notation(), end.notation())
+}
