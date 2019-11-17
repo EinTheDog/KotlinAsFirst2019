@@ -208,7 +208,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
 
-fun chooseNxtKngTurn(x1: Int, x2: Int, y1: Int, y2: Int):Pair<Int, Int> =
+fun chooseNxtKngTurn(x1: Int, x2: Int, y1: Int, y2: Int): Pair<Int, Int> =
     when {
         abs(x2 - x1) > abs(y2 - y1) -> Pair(x1 + abs(x2 - x1) / (x2 - x1), y1)
         abs(x2 - x1) < abs(y2 - y1) -> Pair(x1, y1 + abs(y2 - y1) / (y2 - y1))
