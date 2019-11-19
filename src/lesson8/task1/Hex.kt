@@ -248,6 +248,38 @@ fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
  *       HexPoint(y = 5, x = 3)
  *     )
  */
+fun chooseDir(x1: Int, y1: Int, x2: Int, y2: Int): Pair<Int, Int> {
+    var dirX = 0
+    var dirY = 0
+    when {
+        x2 > x1 && y2 < y1 -> {
+            dirX = 1
+            dirY = -1
+        }
+        x2 < x1 && y2 > y1 -> {
+            dirX = -1
+            dirY = 1
+        }
+        else -> {
+            when {
+                y2 < y1 -> {
+                    dirY = -1
+                }
+                y2 > y1 -> {
+                    dirY = 1
+                }
+                else -> {
+                    if (x2 < x1) {
+                        dirX = -1
+                    } else {
+                        dirX = 1
+                    }
+                }
+            }
+        }
+    }
+    return (Pair(dirX, dirY))
+}
 fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     var x1 = from.x
     var y1 = from.y
@@ -255,34 +287,9 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     val y2 = to.y
     val ans = mutableListOf<HexPoint>(HexPoint(x1, y1))
     while (x1 != x2 || y1 != y2) {
-        when {
-            x2 > x1 && y2 < y1 -> {
-                x1++
-                y1--
-            }
-            x2 < x1 && y2 > y1 -> {
-                x1--
-                y1++
-            }
-            else -> {
-                when {
-                    y2 < y1 -> {
-                        y1--
-                    }
-                    y2 > y1 -> {
-                        y1++
-                    }
-                    else -> {
-                        if (x2 < x1) {
-                            x1--
-                        } else {
-                            x1++
-                        }
-                    }
-                }
-
-            }
-        }
+        val dir = chooseDir(x1, y1, x2, y2)
+        x1 += dir.first
+        y1 += dir.second
         ans.add(HexPoint(x1, y1))
     }
     return ans
@@ -303,7 +310,100 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  *
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
-fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO()
+fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
+    var x1 = a.x
+    var y1 = a.y
+    var x2 = b.x
+    var y2 = b.y
+    var x3 = c.x
+    var y3 = c.y
+
+    val startHex: HexPoint
+    val midHex: HexPoint
+    val endHex: HexPoint
+
+    var l12 = 0
+    var l23 = 0
+    var l13 = 0
+    while (x1 != x2 || y1 != y2) {
+        val dir = chooseDir(x1, y1, x2, y2)
+        x1 += dir.first
+        y1 += dir.second
+        l12++
+    }
+    x1 = a.x
+    y1 = a.y
+    while (x2 != x3 || y2 != y3) {
+        val dir = chooseDir(x2, y2, x3, y3)
+        x2 += dir.first
+        y2 += dir.second
+        l23++
+    }
+    while (x1 != x3 || y1 != y3) {
+        val dir = chooseDir(x1, y1, x3, y3)
+        x1 += dir.first
+        y1 += dir.second
+        l13++
+    }
+
+    when {
+        l13 > l12 && l13 > l23 -> {
+            startHex = a
+            midHex = b
+            endHex = c
+        }
+        l12 > l13 && l12 > l23 -> {
+            startHex = a
+            midHex = c
+            endHex = b
+        }
+        else -> {
+            startHex = b
+            midHex = a
+            endHex = c
+        }
+    }
+    x1 = startHex.x
+    y1 = startHex.y
+    x2 = midHex.x
+    y2 = midHex.y
+    x3 = endHex.x
+    y3 = endHex.y
+
+    val sides = mutableListOf<Int>()
+    var prevDir = Pair(0, 0)
+
+    fun changeSides(dir: Pair<Int, Int>) {
+        if (prevDir != dir) sides.add(0)
+        sides[sides.lastIndex]++
+        prevDir = dir
+    }
+    while (x1 != x2 || y1 != y2) {
+        val dir = chooseDir(x1, y1, x2, y2)
+        x1 += dir.first
+        y1 += dir.second
+        changeSides(dir)
+    }
+    sides[0]++
+    x1 = startHex.x
+    y1 = startHex.y
+
+    while (x2 != x3 || y2 != y3) {
+        val dir = chooseDir(x2, y2, x3, y3)
+        x2 += dir.first
+        y2 += dir.second
+        changeSides(dir)
+    }
+
+    val hexExists = when {
+        sides.size == 3 && (sides[0] > sides[1] || sides[2] > sides[1]) -> false
+        sides.size == 4 && (sides[1] != sides[2] || sides[0] > sides[1] || sides[3] > sides[1]) -> false
+        else -> true
+    }
+
+    if (!hexExists) return null
+    else return Hexagon(a, 0)
+}
 
 /**
  * Очень сложная
