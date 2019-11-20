@@ -12,6 +12,7 @@ class HexTests {
     @Tag("Normal")
     fun hexPointDistance() {
         assertEquals(5, HexPoint(6, 1).distance(HexPoint(1, 4)))
+        assertEquals(1799, HexPoint(417, -557).distance(HexPoint(806, 853)))
     }
 
     @Test
@@ -118,17 +119,17 @@ class HexTests {
     @Test
     @Tag("Impossible")
     fun hexagonByThreePoints() {
-/*        assertEquals(
+        assertEquals(
             Hexagon(HexPoint(4, 2), 2),
             hexagonByThreePoints(HexPoint(3, 1), HexPoint(2, 3), HexPoint(4, 4))
-        )*/
+        )
         assertNull(
             hexagonByThreePoints(HexPoint(3, 1), HexPoint(2, 3), HexPoint(5, 4))
         )
-/*        assertEquals(
+        assertEquals(
             3,
             hexagonByThreePoints(HexPoint(2, 3), HexPoint(3, 3), HexPoint(5, 3))?.radius
-        )*/
+        )
     }
 
     @Test

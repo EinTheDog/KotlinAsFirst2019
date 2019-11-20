@@ -39,7 +39,8 @@ data class HexPoint(val x: Int, val y: Int) {
      * Расстояние вычисляется как число единичных отрезков в пути между двумя гексами.
      * Например, путь межу гексами 16 и 41 (см. выше) может проходить через 25, 34, 43 и 42 и имеет длину 5.
      */
-    fun distance(other: HexPoint) = max(abs(other.x - this.x), abs(other.y - this.y))
+    fun distance(other: HexPoint) =
+        (abs(other.x - this.x) + abs(other.y - this.y) + abs(this.x + this.y - other.x - other.y)) / 2
 
     override fun toString(): String = "$y.$x"
 }
@@ -67,9 +68,8 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      * (расстояние между точками 32 и 24)
      */
     fun distance(other: Hexagon): Int {
-        val a = axialToCube(this.center)
-        val b = axialToCube(other.center)
-        return ((abs(a.x - b.x) + abs(a.y - b.y) + abs(a.z - b.z)) / 2) - this.radius - other.radius
+        val d = this.center.distance((other.center))
+        return if (d - this.radius - other.radius > 0) d - this.radius - other.radius else 0
     }
 
     /**
@@ -77,7 +77,12 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      *
      * Вернуть true, если заданная точка находится внутри или на границе шестиугольника
      */
-    fun contains(point: HexPoint): Boolean = abs(this.center.x - point.x) + abs(this.center.y - point.y) <= this.radius
+    fun contains(point: HexPoint): Boolean {
+        val x = point.x - this.center.x
+        val y = point.y - this.center.y
+        val r = this.radius
+        return (x in -r..r) && (y in -r..r) && (-x - y in -r..r)
+    }
 }
 
 /**
@@ -93,6 +98,7 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * А, например, 13-26 не является "правильным" отрезком.
      */
     fun isValid(): Boolean {
+        if (begin == end) return false
         val a = axialToCube(begin)
         val b = axialToCube(end)
         return (a.x == b.x || a.y == b.y || a.z == b.z)
@@ -402,7 +408,41 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     }
 
     if (!hexExists) return null
-    else return Hexagon(a, 0)
+    TODO()
+    val r = sides.max() ?: 0
+
+    /*var o1 = Pair(x1, y1)
+    var o2 = Pair(x2, y2)
+    var o3 = Pair(x3, y3)
+
+    fun tryAll(o1: Pair<Int, Int>, o2: Pair<Int, Int>): Boolean {
+        return when {
+            o1 == Pair(o2.first - r, o2.second) -> true
+            o1 == Pair(o2.first + r, o2.second) -> true
+            o1 == Pair(o2.first, o2.second - r) -> true
+            o1 == Pair(o2.first - r, o2.second + r) -> true
+            o1 == Pair(o2.first - r, o2.second + r) -> true
+            o1 == Pair(o2.first + r, o2.second - r) -> true
+            else -> false
+        }
+    }
+
+    val o = when {
+        tryAll(Pair(o1.first - r, o1.second), o2) && tryAll(Pair(o1.first - r, o1.second), o3) ->
+            Pair(o1.first - r, o1.second)
+        tryAll(Pair(o1.first + r, o1.second), o2) && tryAll(Pair(o1.first + r, o1.second), o3) ->
+            Pair(o1.first + r, o1.second)
+        tryAll(Pair(o1.first, o1.second - r), o2) && tryAll(Pair(o1.first, o1.second - r), o3) ->
+            Pair(o1.first, o1.second - r)
+        tryAll(Pair(o1.first, o1.second + r), o2) && tryAll(Pair(o1.first, o1.second + r), o3) ->
+            Pair(o1.first, o1.second + r)
+        tryAll(Pair(o1.first - r, o1.second + r), o2) && tryAll(Pair(o1.first - r, o1.second + r), o3) ->
+            Pair(o1.first - r, o1.second + r)
+        else ->
+            Pair(o1.first + r, o1.second - r)
+    }
+
+    return (Hexagon(HexPoint(o.first, o.second), r))*/
 }
 
 /**

@@ -188,6 +188,7 @@ class Line private constructor(val b: Double, val angle: Double) {
 fun lineBySegment(s: Segment): Line {
     var angle = atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))
     if (angle < 0) angle += PI
+    if (angle >= PI) angle -= PI
     return (Line(s.begin, angle))
 }
 
@@ -275,7 +276,6 @@ fun minContainingCircle(vararg points: Point): Circle {
         outer@ for (j in i + 1 until points.size) {
             val circle = circleByDiameter(Segment(points[i], points[j]))
             for (p in points) {
-                val a = !circle.contains(p)
                 if (!circle.contains(p)) continue@outer
             }
             if (minR == -1.0 || minR > circle.radius) {
