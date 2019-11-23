@@ -286,6 +286,7 @@ fun chooseDir(x1: Int, y1: Int, x2: Int, y2: Int): Pair<Int, Int> {
     }
     return (Pair(dirX, dirY))
 }
+
 fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     var x1 = from.x
     var y1 = from.y
@@ -380,9 +381,11 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     val sides = mutableListOf<Int>()
     var prevDir = Pair(0, 0)
 
-    fun changeSides(dir: Pair<Int, Int>, x:Int, y: Int) {
+    fun changeSides(dir: Pair<Int, Int>, x: Int, y: Int, xStart: Int, yStart: Int) {
         if (prevDir != dir) {
             potentialCorners.add(HexPoint(x, y))
+            if (sides.size > 0)
+                potentialCorners.add(HexPoint(xStart + dir.first * sides.last(), yStart + dir.second * sides.last()))
             sides.add(0)
         }
         sides[sides.lastIndex]++
@@ -390,20 +393,15 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     }
     while (x1 != x2 || y1 != y2) {
         val dir = chooseDir(x1, y1, x2, y2)
-        changeSides(dir, x1, y1)
+        changeSides(dir, x1, y1, startHex.x, startHex.y)
         x1 += dir.first
         y1 += dir.second
     }
-    sides[0]++
-    x1 = startHex.x
-    y1 = startHex.y
-    if (sides.size > 1) {
-
-    }
+    if (sides.size > 1) sides[0]++
 
     while (x2 != x3 || y2 != y3) {
         val dir = chooseDir(x2, y2, x3, y3)
-        changeSides(dir, x2, y2)
+        changeSides(dir, x2, y2, midHex.x, midHex.y)
         x2 += dir.first
         y2 += dir.second
     }
@@ -415,10 +413,31 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     }
 
     if (!hexExists) return null
-    TODO()
+
     val r = sides.max() ?: 0
 
+    fun checkCenter(cx: Int, cy: Int, cz: Int): Boolean {
+        val potentialHex = Hexagon(HexPoint(cx, cy), r)
+        return (potentialHex.contains(a) && (cx == a.x + r || cx == a.x - r || cy == a.y + r || cy == a.y - r || cz == a.x + a.y + r || cz == a.x + a.y - r)
+                && (potentialHex.contains(b) && (cx == b.x + r || cx == b.x - r || cy == b.y + r || cy == b.y - r || cz == b.x + b.y + r || cz == b.x + b.y - r))
+                && (potentialHex.contains(c) && (cx == c.x + r || cx == c.x - r || cy == c.y + r || cy == c.y - r || cz == c.x + c.y + r || cz == c.x + c.y - r)))
+    }
 
+    var center: HexPoint = a
+    for ((x, y) in potentialCorners) {
+        center = when {
+            checkCenter(x + r, y, x + y + r) -> HexPoint(x + r, y)
+            checkCenter(x - r, y, x + y - r) -> HexPoint(x - r, y)
+            checkCenter(x, y + r, x + y + r) -> HexPoint(x, y + r)
+            checkCenter(x, y - r, x + y - r) -> HexPoint(x, y - r)
+            checkCenter(x + r, y - r, x + y) -> HexPoint(x + r, y - r)
+            checkCenter(x - r, y + r, x + y) -> HexPoint(x - r, y + r)
+            else -> a
+        }
+        if (center != a) break
+    }
+
+    return (Hexagon(center, r))
 }
 
 /**
