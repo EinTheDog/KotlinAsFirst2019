@@ -375,30 +375,37 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     y2 = midHex.y
     x3 = endHex.x
     y3 = endHex.y
+    val potentialCorners = mutableListOf<HexPoint>()
 
     val sides = mutableListOf<Int>()
     var prevDir = Pair(0, 0)
 
-    fun changeSides(dir: Pair<Int, Int>) {
-        if (prevDir != dir) sides.add(0)
+    fun changeSides(dir: Pair<Int, Int>, x:Int, y: Int) {
+        if (prevDir != dir) {
+            potentialCorners.add(HexPoint(x, y))
+            sides.add(0)
+        }
         sides[sides.lastIndex]++
         prevDir = dir
     }
     while (x1 != x2 || y1 != y2) {
         val dir = chooseDir(x1, y1, x2, y2)
+        changeSides(dir, x1, y1)
         x1 += dir.first
         y1 += dir.second
-        changeSides(dir)
     }
     sides[0]++
     x1 = startHex.x
     y1 = startHex.y
+    if (sides.size > 1) {
+
+    }
 
     while (x2 != x3 || y2 != y3) {
         val dir = chooseDir(x2, y2, x3, y3)
+        changeSides(dir, x2, y2)
         x2 += dir.first
         y2 += dir.second
-        changeSides(dir)
     }
 
     val hexExists = when {
@@ -411,38 +418,7 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     TODO()
     val r = sides.max() ?: 0
 
-    /*var o1 = Pair(x1, y1)
-    var o2 = Pair(x2, y2)
-    var o3 = Pair(x3, y3)
 
-    fun tryAll(o1: Pair<Int, Int>, o2: Pair<Int, Int>): Boolean {
-        return when {
-            o1 == Pair(o2.first - r, o2.second) -> true
-            o1 == Pair(o2.first + r, o2.second) -> true
-            o1 == Pair(o2.first, o2.second - r) -> true
-            o1 == Pair(o2.first - r, o2.second + r) -> true
-            o1 == Pair(o2.first - r, o2.second + r) -> true
-            o1 == Pair(o2.first + r, o2.second - r) -> true
-            else -> false
-        }
-    }
-
-    val o = when {
-        tryAll(Pair(o1.first - r, o1.second), o2) && tryAll(Pair(o1.first - r, o1.second), o3) ->
-            Pair(o1.first - r, o1.second)
-        tryAll(Pair(o1.first + r, o1.second), o2) && tryAll(Pair(o1.first + r, o1.second), o3) ->
-            Pair(o1.first + r, o1.second)
-        tryAll(Pair(o1.first, o1.second - r), o2) && tryAll(Pair(o1.first, o1.second - r), o3) ->
-            Pair(o1.first, o1.second - r)
-        tryAll(Pair(o1.first, o1.second + r), o2) && tryAll(Pair(o1.first, o1.second + r), o3) ->
-            Pair(o1.first, o1.second + r)
-        tryAll(Pair(o1.first - r, o1.second + r), o2) && tryAll(Pair(o1.first - r, o1.second + r), o3) ->
-            Pair(o1.first - r, o1.second + r)
-        else ->
-            Pair(o1.first + r, o1.second - r)
-    }
-
-    return (Hexagon(HexPoint(o.first, o.second), r))*/
 }
 
 /**
