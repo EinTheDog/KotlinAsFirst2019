@@ -87,7 +87,10 @@ data class Circle(val center: Point, val radius: Double) {
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = (sqrt(sqr(this.center.x - p.x) + sqr(this.center.y - p.y)) <= this.radius)
+    fun contains(p: Point): Boolean {
+        val a = sqrt(sqr(this.center.x - p.x) + sqr(this.center.y - p.y))
+        return (sqrt(sqr(this.center.x - p.x) + sqr(this.center.y - p.y)) <= this.radius + 1e-5)
+    }
 }
 
 /**
@@ -267,38 +270,70 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle {
-    var minR = -1.0
+    val myPoints = points.toMutableSet()
+    val usingPoints = mutableListOf<Point>()
     var ans = Circle(points[0], 0.0)
+    myPoints.remove(points[0])
+    usingPoints.add(points[0])
 
-    if (points.size == 1) return ans
-
-    for (i in 0 until points.size - 1) {
-        outer@ for (j in i + 1 until points.size) {
-            val circle = circleByDiameter(Segment(points[i], points[j]))
-            for (p in points) {
-                if (!circle.contains(p)) continue@outer
-            }
-            if (minR == -1.0 || minR > circle.radius) {
-                minR = circle.radius
-                ans = circle
+    fun findTheFarthest(pointSet: Set<Point>, center: Point): Point {
+        var maxDistance = 0.0
+        var farPoint = points[1]
+        for (point in pointSet) {
+            val d = Segment(point, center).length()
+            if (d > maxDistance) {
+                maxDistance = d
+                farPoint = point
             }
         }
+        return farPoint
     }
 
-    if (minR != -1.0) return ans
+    fun addPointTo2(farPoint: Point) {
+        val point2: Point
+        val point3: Point
+        if (Segment(farPoint, usingPoints[0]).length() > Segment(farPoint, usingPoints[1]).length()) {
+            point2 = usingPoints[0]
+            point3 = usingPoints[1]
+        } else {
+            point2 = usingPoints[1]
+            point3 = usingPoints[0]
+        }
+        val potentialCircle = circleByDiameter(Segment(farPoint, point2))
+        if (potentialCircle.contains(point3)) {
+            ans = potentialCircle
+            usingPoints.remove(point3)
+        } else {
+            ans = circleByThreePoints(farPoint, point2, point3)
+        }
+        usingPoints.add(farPoint)
+    }
 
-    for (i in 0 until points.size - 2) {
-        for (j in i + 1 until points.size - 1) {
-            outer@ for (k in j + 1 until points.size) {
-                val circle = circleByThreePoints(points[i], points[j], points[k])
-                for (p in points) {
-                    if (!circle.contains(p)) continue@outer
+    while (myPoints.size > 0) {
+        val farPoint = findTheFarthest(myPoints, ans.center)
+        if (ans.contains(farPoint)) break
+        else {
+            when (usingPoints.size) {
+                1 -> {
+                    ans = circleByDiameter(Segment(usingPoints[0], farPoint))
+                    usingPoints.add(farPoint)
                 }
-                if (minR == -1.0 || minR > circle.radius) {
-                    minR = circle.radius
-                    ans = circle
+                2 -> {
+                    addPointTo2(farPoint)
+                }
+                3 -> {
+                    val d1 = Segment(farPoint, usingPoints[0]).length()
+                    val d2 = Segment(farPoint, usingPoints[1]).length()
+                    val d3 = Segment(farPoint, usingPoints[2]).length()
+                    when {
+                        d1 < d2 && d1 < d3 -> usingPoints.removeAt(0)
+                        d2 < d1 && d2 < d3 -> usingPoints.removeAt(1)
+                        d3 < d2 && d3 < d1 -> usingPoints.removeAt(2)
+                    }
+                    addPointTo2(farPoint)
                 }
             }
+            myPoints.remove(farPoint)
         }
     }
 
