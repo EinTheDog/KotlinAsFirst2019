@@ -69,44 +69,4 @@ class Graph {
         return listOf()
     }
 
-    /*private var knightTurns = listOf<Vertex>()
-    private fun dfsWay(start: Vertex, finish: Vertex, visited: List<Vertex>, min: Int?): Int? {
-        if (min != null && visited.size > min) return null
-        if (start == finish) {
-            knightTurns = visited
-            return 0
-        }
-
-        var localMin: Int? = null
-        for (neighbor in start.neighbors) {
-            val wayFromNeigbor = if (neighbor !in visited) dfsWay(neighbor, finish, visited + neighbor, min)
-            else null
-            if (wayFromNeigbor != null && (localMin == null || wayFromNeigbor < localMin)) localMin = wayFromNeigbor
-        }
-        return localMin
-    }
-
-    fun dfsWay(start: String, finish: String): List<Square> {
-        dfsWay(this[start], this[finish], listOf(this[start]), null)
-        val ans = mutableListOf<Square>()
-        for ((name) in knightTurns) {
-            ans.add(square(name))
-        }
-        return ans
-    }
-
-    fun dfs(start: String, finish: String): Int = dfs(this[start], this[finish], setOf()) ?: -1
-
-    private fun dfs(start: Vertex, finish: Vertex, visited: Set<Vertex>): Int? =
-        if (start == finish) 0
-        else {
-            val min = start.neighbors
-                .filter { it !in visited }
-                .mapNotNull { dfs(it, finish, visited + start) }
-                .min()
-            if (min == null) null else min + 1
-        }*/
-
-
-
 }

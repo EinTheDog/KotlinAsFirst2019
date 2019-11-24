@@ -292,7 +292,6 @@ fun minContainingCircle(vararg points: Point): Circle {
             outer@ for (k in j + 1 until points.size) {
                 val circle = circleByThreePoints(points[i], points[j], points[k])
                 for (p in points) {
-                    val a = !circle.contains(points[k])
                     if (!circle.contains(p)) continue@outer
                 }
                 if (minR == -1.0 || minR > circle.radius) {

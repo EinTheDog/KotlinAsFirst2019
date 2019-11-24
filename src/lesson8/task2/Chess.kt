@@ -304,19 +304,19 @@ fun connectVertcies (chessField: Graph) {
     for (i in 0..7) {
         for (j in 1..8) {
             if (i + 1 < 7) {
-                if (j + 2 < 8) chessField.connect("${'a' + i}$j", "${'a' + i + 1}${j + 2}")
+                if (j + 2 <= 8) chessField.connect("${'a' + i}$j", "${'a' + i + 1}${j + 2}")
                 if (j - 2 > 0) chessField.connect("${'a' + i}$j", "${'a' + i + 1}${j - 2}")
             }
             if (i + 2 < 7) {
-                if (j + 1 < 8) chessField.connect("${'a' + i}$j", "${'a' + i + 2}${j + 1}")
+                if (j + 1 <= 8) chessField.connect("${'a' + i}$j", "${'a' + i + 2}${j + 1}")
                 if (j - 1 > 0) chessField.connect("${'a' + i}$j", "${'a' + i + 2}${j - 1}")
             }
             if (i - 1 > 0) {
-                if (j + 2 < 8) chessField.connect("${'a' + i}$j", "${'a' + i - 1}${j + 2}")
+                if (j + 2 <= 8) chessField.connect("${'a' + i}$j", "${'a' + i - 1}${j + 2}")
                 if (j - 2 > 0) chessField.connect("${'a' + i}$j", "${'a' + i - 1}${j - 2}")
             }
             if (i - 2 > 0) {
-                if (j + 1 < 8) chessField.connect("${'a' + i}$j", "${'a' + i - 2}${j + 1}")
+                if (j + 1 <= 8) chessField.connect("${'a' + i}$j", "${'a' + i - 2}${j + 1}")
                 if (j - 1 > 0) chessField.connect("${'a' + i}$j", "${'a' + i - 2}${j - 1}")
             }
         }
