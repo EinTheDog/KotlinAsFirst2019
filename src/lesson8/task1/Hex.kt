@@ -376,19 +376,19 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     y2 = midHex.y
     x3 = endHex.x
     y3 = endHex.y
-    val potentialCorners = mutableListOf<HexPoint>()
 
-    val sides = mutableListOf<Int>()
+    val sidesParts = mutableListOf<Int>()
+    val partsInSides = mutableListOf<Set<Int>>()
+    val sidesPartsDirs = mutableListOf<Pair<Int, Int>>()
     var prevDir = Pair(0, 0)
 
     fun changeSides(dir: Pair<Int, Int>, x: Int, y: Int, xStart: Int, yStart: Int) {
         if (prevDir != dir) {
-            potentialCorners.add(HexPoint(x, y))
-            if (sides.size > 0)
-                potentialCorners.add(HexPoint(xStart + dir.first * sides.last(), yStart + dir.second * sides.last()))
-            sides.add(0)
+            sidesPartsDirs.add(dir)
+            sidesParts.add(0)
+            partsInSides.add(setOf(sidesParts.lastIndex))
         }
-        sides[sides.lastIndex]++
+        sidesParts[sidesParts.lastIndex]++
         prevDir = dir
     }
     while (x1 != x2 || y1 != y2) {
@@ -397,7 +397,9 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         x1 += dir.first
         y1 += dir.second
     }
-    if (sides.size > 1) sides[0]++
+    sidesParts.add(1)
+    sidesPartsDirs.add(sidesPartsDirs.last())
+    partsInSides[partsInSides.lastIndex] = partsInSides.last() + sidesParts.lastIndex
 
     while (x2 != x3 || y2 != y3) {
         val dir = chooseDir(x2, y2, x3, y3)
@@ -406,15 +408,46 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         y2 += dir.second
     }
 
+    if (sidesParts[0] > sidesParts[1]) {
+        val t = sidesParts[0]
+        sidesParts[0] = sidesParts[1]
+        sidesParts[1] = t
+    }
+    if (sidesParts.size > 3 && sidesParts[3] > sidesParts[2] && sidesPartsDirs[3] == sidesPartsDirs[1]) {
+        val t = sidesParts[3]
+        sidesParts[3] = sidesParts[2]
+        sidesParts[2] = t
+    }
+
+    val sides = mutableListOf<Int>()
+    for (set in partsInSides) {
+        sides.add(0)
+        for (i in set) {
+            sides[sides.lastIndex] += sidesParts[i]
+        }
+    }
+
+
     val hexExists = when {
-        sides.size == 3 && (sides[0] > sides[1] || sides[2] > sides[1]) -> false
-        sides.size == 4 && (sides[1] != sides[2] || sides[0] > sides[1] || sides[3] > sides[1]) -> false
+        sides.size == 3 && (sides[0] > sides[1] || sides[2] >= sides[1]) -> false
+        sides.size == 4 && (sides[1] != sides[2] || sides[0] > sides[1] || sides[3] >= sides[1]) -> false
         else -> true
     }
 
     if (!hexExists) return null
 
-    val r = sides.max() ?: 0
+    val corner = if (sidesParts.size == 3 && partsInSides[0].size == 2)
+        HexPoint(
+            midHex.x + sidesParts[1] * sidesPartsDirs[0].first,
+            midHex.y + sidesParts[1] * sidesPartsDirs[0].second
+        )
+    else if (sidesParts.size == 2) startHex
+    else HexPoint(
+        midHex.x - sidesParts[1] * sidesPartsDirs[1].first,
+        midHex.y - sidesParts[1] * sidesPartsDirs[1].second
+    )
+
+    val r = (sides.max() ?: 1) - 1
 
     fun checkCenter(cx: Int, cy: Int, cz: Int): Boolean {
         val potentialHex = Hexagon(HexPoint(cx, cy), r)
@@ -423,18 +456,16 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
                 && (potentialHex.contains(c) && (cx == c.x + r || cx == c.x - r || cy == c.y + r || cy == c.y - r || cz == c.x + c.y + r || cz == c.x + c.y - r)))
     }
 
-    var center: HexPoint = a
-    for ((x, y) in potentialCorners) {
-        center = when {
-            checkCenter(x + r, y, x + y + r) -> HexPoint(x + r, y)
-            checkCenter(x - r, y, x + y - r) -> HexPoint(x - r, y)
-            checkCenter(x, y + r, x + y + r) -> HexPoint(x, y + r)
-            checkCenter(x, y - r, x + y - r) -> HexPoint(x, y - r)
-            checkCenter(x + r, y - r, x + y) -> HexPoint(x + r, y - r)
-            checkCenter(x - r, y + r, x + y) -> HexPoint(x - r, y + r)
-            else -> a
-        }
-        if (center != a) break
+    val x = corner.x
+    val y = corner.y
+    val center = when {
+        checkCenter(x + r, y, x + y + r) -> HexPoint(x + r, y)
+        checkCenter(x - r, y, x + y - r) -> HexPoint(x - r, y)
+        checkCenter(x, y + r, x + y + r) -> HexPoint(x, y + r)
+        checkCenter(x, y - r, x + y - r) -> HexPoint(x, y - r)
+        checkCenter(x + r, y - r, x + y) -> HexPoint(x + r, y - r)
+        checkCenter(x - r, y + r, x + y) -> HexPoint(x - r, y + r)
+        else -> a
     }
 
     return (Hexagon(center, r))
