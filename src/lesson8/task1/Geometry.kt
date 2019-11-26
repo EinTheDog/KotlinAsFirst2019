@@ -89,7 +89,7 @@ data class Circle(val center: Point, val radius: Double) {
      */
     fun contains(p: Point): Boolean {
         val a = sqrt(sqr(this.center.x - p.x) + sqr(this.center.y - p.y))
-        return (sqrt(sqr(this.center.x - p.x) + sqr(this.center.y - p.y)) <= this.radius + 1e-10)
+        return (sqrt(sqr(this.center.x - p.x) + sqr(this.center.y - p.y)) <= this.radius + 1e-6)
     }
 }
 

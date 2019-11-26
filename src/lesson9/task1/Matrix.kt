@@ -2,6 +2,8 @@
 
 package lesson9.task1
 
+import java.lang.IllegalArgumentException
+
 /**
  * Ячейка матрицы: row = ряд, column = колонка
  */
@@ -43,7 +45,7 @@ interface Matrix<E> {
  */
 fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
     require(width > 0 && height > 0)
-    return MatrixImpl<E>()
+    return MatrixImpl<E>(height, width, e)
 }
 
 /**
@@ -63,11 +65,54 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     }
 
 
-    override fun get(row: Int, column: Int): E = TODO()
-    override fun get(cell: Cell): E = TODO()
+    override fun get(row: Int, column: Int): E = map[Cell(row, column)] ?: throw IllegalStateException()
+    override fun get(cell: Cell): E = map[cell] ?: throw IllegalStateException()
 
-    override fun set(row: Int, column: Int, value: E) = TODO()
-    override fun set(cell: Cell, value: E) = TODO()
+    override fun set(row: Int, column: Int, value: E) {
+        map[Cell(row, column)] = value
+    }
+
+    override fun set(cell: Cell, value: E) {
+        map[cell] = value
+    }
+
+    override fun equals(other: Any?): Boolean {
+        var ans = other is MatrixImpl<*> &&
+                height == other.height &&
+                width == other.width
+        if (other is MatrixImpl<*> && ans) {
+            outer@ for (i in 0 until height) {
+                for (j in 0 until width) {
+                    ans = this[i, j] == other[i, j]
+                    if (!ans) break@outer
+                }
+            }
+        }
+        return ans
+    }
+
+    override fun hashCode(): Int {
+        var result = height
+        result = 31 * result + width
+        result = 31 * result + map.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.append("[")
+        for (row in 0 until height) {
+            sb.append("[")
+            sb.append(this[row, 0])
+            for (column in 1 until width) {
+                sb.append(", ")
+                sb.append(this[row, column])
+            }
+            sb.append("]")
+        }
+        sb.append("]")
+        return sb.toString()
+    }
 }
 
 
