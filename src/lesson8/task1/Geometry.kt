@@ -304,7 +304,7 @@ fun minContainingCircle(vararg points: Point): Circle {
             ans = potentialCircle
             usingPoints.remove(point3)
         } else {
-            ans = circleByThreePoints(farPoint, point2, point3)
+            ans = circleByThreePoints(point2, farPoint, point3)
         }
         usingPoints.add(farPoint)
     }

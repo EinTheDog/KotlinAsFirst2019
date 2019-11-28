@@ -154,55 +154,25 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
  */
 fun generateSnake(height: Int, width: Int): Matrix<Int> {
     val mx = createMatrix(height, width, 0)
-    val dirs = listOf<Pair<Int, Int>>(Pair(-1, 1), Pair(1, -1))
     var n = 1
+    var startI = 0
+    var startJ = 0
     var i = 0
     var j = 0
-    var k = 0
 
-    mx[i, j] = n
-    n++
-    var next = -1
-    when {
-        i == 0 && j < width - 1-> {
-            j++
-            k = 1
-            next = mx[i, j]
-        }
-        j == 0 && i < height - 1 -> {
-            i++
-            k = 0
-            next = mx[i, j]
-        }
-    }
-    while (next == 0) {
+    while (i < height - 1 || j < width - 1) {
         mx[i, j] = n
         n++
-        if (i + dirs[k].first !in 0 until height
-            || j + dirs[k].second !in 0 until width
-            || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 2
-        if (i + dirs[k].first == height || j + dirs[k].second == width) next = -1
-        else next = mx[i + dirs[k].first, j + dirs[k].second]
-        when {
-            next == -1 && (i == 0 || i == height - 1) && j < width - 1 -> {
-                j++
-                k = 1
-                next = mx[i, j]
-            }
-            next == -1 && (j == 0 || j == width - 1) && i < height - 1 -> {
-                i++
-                k = 0
-                next = mx[i, j]
-            }
-            i == height - 1 && j == width - 1 -> next = -1
-            else -> {
-                i += dirs[k].first
-                j += dirs[k].second
-                next = mx[i, j]
-            }
+        if (i + 1 !in 0 until height || j - 1 !in 0 until width) {
+            if (startJ < width - 1) startJ++ else startI++
+            i = startI
+            j = startJ
+        } else {
+            i++
+            j--
         }
     }
-    if (mx[height - 1, width - 1] == 0) mx[height - 1, width - 1] = n
+    mx[i, j] = n
     return mx
 }
 
@@ -217,7 +187,16 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    require(matrix.height == matrix.width)
+    val mx = createMatrix(matrix.height, matrix.width, matrix[0, 0])
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) {
+            mx[j, mx.width - 1 - i] = matrix[i, j]
+        }
+    }
+    return mx
+}
 
 /**
  * Сложная
