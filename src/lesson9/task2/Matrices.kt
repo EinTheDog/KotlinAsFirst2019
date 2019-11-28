@@ -87,7 +87,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
             || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
         i += dirs[k].first
         j += dirs[k].second
-        next = mx[i, j]
+        next = if (i in 0 until mx.height && j in 0 until mx.width) mx[i, j] else -1
     }
     return mx
 }
@@ -134,7 +134,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
         }
         i += dirs[k].first
         j += dirs[k].second
-        next = mx[i, j]
+        next = if (i in 0 until mx.height && j in 0 until mx.width) mx[i, j] else -1
     }
     return mx
 }
