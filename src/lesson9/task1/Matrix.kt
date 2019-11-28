@@ -34,6 +34,12 @@ interface Matrix<E> {
     operator fun set(row: Int, column: Int, value: E)
 
     operator fun set(cell: Cell, value: E)
+
+    fun find(value: E): Cell?
+
+    fun change(cell1: Cell, cell2: Cell)
+
+    fun findNeighbours(cell: Cell): Set<Cell>
 }
 
 /**
@@ -112,6 +118,33 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         }
         sb.append("]")
         return sb.toString()
+    }
+
+    //Мои функции
+    override fun find(value: E): Cell? {
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                if (this[i, j]!! == value) return Cell(i, j)
+            }
+        }
+        return null
+    }
+
+    override fun change(cell1: Cell, cell2: Cell) {
+        val t = this[cell1]
+        this[cell1] = this[cell2]
+        this[cell2] = t
+    }
+
+    override fun findNeighbours(cell: Cell): Set<Cell> {
+        val i = cell.row
+        val j = cell.column
+        val set = mutableSetOf<Cell>()
+        if (i - 1 >= 0) set.add(Cell(i - 1, j))
+        if (i + 1 < height) set.add(Cell(i + 1, j))
+        if (j - 1 >= 0) set.add(Cell(i, j - 1))
+        if (j + 1 < width) set.add(Cell(i, j + 1))
+        return set
     }
 }
 
