@@ -60,7 +60,37 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    val mx = createMatrix(height, width, 0)
+    val dirs = listOf<Pair<Int, Int>>(Pair(0, 1), Pair(1, 0), Pair(0, -1), Pair(-1, 0))
+    var n = 1
+    var i = 0
+    var j = 0
+    var k = 0
+
+    mx[i, j] = n
+    n++
+    var next = -1
+    if (i + dirs[k].first !in 0 until height
+        || j + dirs[k].second !in 0 until width
+        || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
+    if (height > 1 || width > 1) {
+        i += dirs[k].first
+        j += dirs[k].second
+        next = mx[i, j]
+    }
+    while (next == 0) {
+        mx[i, j] = n
+        n++
+        if (i + dirs[k].first !in 0 until height
+            || j + dirs[k].second !in 0 until width
+            || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
+        i += dirs[k].first
+        j += dirs[k].second
+        next = mx[i, j]
+    }
+    return mx
+}
 
 /**
  * Сложная
@@ -76,7 +106,38 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val mx = createMatrix(height, width, 0)
+    val dirs = listOf<Pair<Int, Int>>(Pair(0, 1), Pair(1, 0), Pair(0, -1), Pair(-1, 0))
+    var n = 1
+    var i = 0
+    var j = 0
+    var k = 0
+
+    mx[i, j] = n
+    var next = -1
+    if (i + dirs[k].first !in 0 until height
+        || j + dirs[k].second !in 0 until width
+        || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
+    if (height > 1 || width > 1) {
+        i += dirs[k].first
+        j += dirs[k].second
+        next = mx[i, j]
+    }
+    while (next == 0) {
+        mx[i, j] = n
+        if (i + dirs[k].first !in 0 until height
+            || j + dirs[k].second !in 0 until width
+            || mx[i + dirs[k].first, j + dirs[k].second] != 0) {
+            k = (k + 1) % 4
+            if (k == 0) n++
+        }
+        i += dirs[k].first
+        j += dirs[k].second
+        next = mx[i, j]
+    }
+    return mx
+}
 
 /**
  * Сложная
@@ -91,7 +152,59 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+    val mx = createMatrix(height, width, 0)
+    val dirs = listOf<Pair<Int, Int>>(Pair(-1, 1), Pair(1, -1))
+    var n = 1
+    var i = 0
+    var j = 0
+    var k = 0
+
+    mx[i, j] = n
+    n++
+    var next = -1
+    when {
+        i == 0 && j < width - 1-> {
+            j++
+            k = 1
+            next = mx[i, j]
+        }
+        j == 0 && i < height - 1 -> {
+            i++
+            k = 0
+            next = mx[i, j]
+        }
+    }
+    while (next == 0) {
+        mx[i, j] = n
+        n++
+        if (i + dirs[k].first !in 0 until height
+            || j + dirs[k].second !in 0 until width
+            || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 2
+        if (i + dirs[k].first == height || j + dirs[k].second == width) next = -1
+        else next = mx[i + dirs[k].first, j + dirs[k].second]
+        when {
+            next == -1 && (i == 0 || i == height - 1) && j < width - 1 -> {
+                j++
+                k = 1
+                next = mx[i, j]
+            }
+            next == -1 && (j == 0 || j == width - 1) && i < height - 1 -> {
+                i++
+                k = 0
+                next = mx[i, j]
+            }
+            i == height - 1 && j == width - 1 -> next = -1
+            else -> {
+                i += dirs[k].first
+                j += dirs[k].second
+                next = mx[i, j]
+            }
+        }
+    }
+    if (mx[height - 1, width - 1] == 0) mx[height - 1, width - 1] = n
+    return mx
+}
 
 /**
  * Средняя
