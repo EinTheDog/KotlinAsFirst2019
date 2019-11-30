@@ -119,7 +119,7 @@ class HexTests {
     @Test
     @Tag("Impossible")
     fun hexagonByThreePoints() {
-/*        assertEquals(
+        assertEquals(
             Hexagon(HexPoint(4, 2), 2),
             hexagonByThreePoints(HexPoint(3, 1), HexPoint(2, 3), HexPoint(4, 4))
         )
@@ -129,7 +129,7 @@ class HexTests {
         assertEquals(
             3,
             hexagonByThreePoints(HexPoint(2, 3), HexPoint(3, 3), HexPoint(5, 3))?.radius
-        )*/
+        )
         assertEquals(
             247,
             hexagonByThreePoints(HexPoint(-557, -999), HexPoint(-999, -536), HexPoint(-999, -835))?.radius

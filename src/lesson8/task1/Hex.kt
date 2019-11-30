@@ -3,7 +3,6 @@
 package lesson8.task1
 
 import kotlin.math.abs
-import kotlin.math.max
 
 /**
  * Точка (гекс) на шестиугольной сетке.
@@ -43,6 +42,7 @@ data class HexPoint(val x: Int, val y: Int) {
         (abs(other.x - this.x) + abs(other.y - this.y) + abs(this.x + this.y - other.x - other.y)) / 2
 
     override fun toString(): String = "$y.$x"
+
 }
 
 /**
@@ -318,7 +318,68 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
 fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
-    TODO()
+    val dirs = listOf(
+        Pair(0, -1),
+        Pair(-1, 0),
+        Pair(-1, 1),
+        Pair(0, 1),
+        Pair(1, 0),
+        Pair(1, -1)
+    )
+    val d1 = a.distance(b)
+    val d2 = b.distance(c)
+    val d3 = c.distance(a)
+    val maxD = if (d1 > d2) {
+        if (d1 > d3) d1 else d3
+    } else {
+        if (d2 > d3) d2 else d3
+    }
+    val map = mutableMapOf<HexPoint, Set<Char>>()
+    val centerSet = mutableSetOf<HexPoint>()
+    var center: HexPoint? = null
+    var r = 0
+
+    fun pointsOnRadius(hex: HexPoint): Set<HexPoint> {
+        val set = mutableSetOf<HexPoint>()
+        val start = HexPoint(hex.x + r, hex.y)
+        var h = start
+        set.add(h)
+        var j = 0
+        do {
+            for (i in 1..r) {
+                h = HexPoint(h.x + dirs[j].first, h.y + dirs[j].second)
+                set.add(h)
+            }
+            j++
+        } while (h != start)
+        return set
+    }
+
+    fun addHex(hex: HexPoint, from: Set<Char>) {
+        map[hex] = (map[hex] ?: emptySet<Char>()) + from
+        if ((map[hex] ?: emptySet()).size == 3) center = hex
+    }
+
+    addHex(a, setOf('a'))
+    addHex(b, setOf('b'))
+    addHex(c, setOf('c'))
+
+    while (center == null && r <= maxD + 1) {
+        map.clear()
+        r++
+        for (hex in pointsOnRadius(a)) {
+            addHex(hex, setOf('a'))
+        }
+        for (hex in pointsOnRadius(b)) {
+            addHex(hex, setOf('b'))
+        }
+        for (hex in pointsOnRadius(c)) {
+            addHex(hex, setOf('c'))
+        }
+    }
+
+
+    return if (center == null) null else Hexagon(center!!, r)
 }
 
 /**
