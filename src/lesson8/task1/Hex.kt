@@ -335,7 +335,6 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         if (d2 > d3) d2 else d3
     }
     val map = mutableMapOf<HexPoint, Set<Char>>()
-    val centerSet = mutableSetOf<HexPoint>()
     var center: HexPoint? = null
     var r = 0
 
