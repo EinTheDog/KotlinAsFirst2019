@@ -339,7 +339,7 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toSt
  * 3 10 11  8
  */
 fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
-    val mx = createMatrix(matrix.height, matrix.width, 0)
+    /*val mx = createMatrix(matrix.height, matrix.width, 0)
     for (i in 0 until matrix.height) {
         for (j in 0 until matrix.width) {
             mx[i, j] = matrix[i, j]
@@ -353,7 +353,8 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
         mx.change(numCell, emptyCell!!)
         emptyCell = numCell
     }
-    return mx
+    return mx*/
+    TODO()
 }
 
 /**

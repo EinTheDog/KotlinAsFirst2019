@@ -35,11 +35,6 @@ interface Matrix<E> {
 
     operator fun set(cell: Cell, value: E)
 
-    fun find(value: E): Cell?
-
-    fun change(cell1: Cell, cell2: Cell)
-
-    fun findNeighbours(cell: Cell): Set<Cell>
 }
 
 /**
@@ -121,7 +116,7 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     }
 
     //Мои функции
-    override fun find(value: E): Cell? {
+    /*override fun find(value: E): Cell? {
         for (i in 0 until height) {
             for (j in 0 until width) {
                 if (this[i, j]!! == value) return Cell(i, j)
@@ -145,7 +140,7 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         if (j - 1 >= 0) set.add(Cell(i, j - 1))
         if (j + 1 < width) set.add(Cell(i, j + 1))
         return set
-    }
+    }*/
 }
 
 
