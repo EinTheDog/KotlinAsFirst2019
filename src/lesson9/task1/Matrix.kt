@@ -49,6 +49,11 @@ fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
     return MatrixImpl<E>(height, width, e)
 }
 
+fun <E> createMatrixImpl(height: Int, width: Int, e: E): MatrixImpl<E> {
+    require(width > 0 && height > 0)
+    return MatrixImpl<E>(height, width, e)
+}
+
 /**
  * Средняя сложность
  *
@@ -116,7 +121,7 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     }
 
     //Мои функции
-    /*override fun find(value: E): Cell? {
+    fun find(value: E): Cell? {
         for (i in 0 until height) {
             for (j in 0 until width) {
                 if (this[i, j]!! == value) return Cell(i, j)
@@ -125,13 +130,13 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         return null
     }
 
-    override fun change(cell1: Cell, cell2: Cell) {
+    fun change(cell1: Cell, cell2: Cell) {
         val t = this[cell1]
         this[cell1] = this[cell2]
         this[cell2] = t
     }
 
-    override fun findNeighbours(cell: Cell): Set<Cell> {
+    fun findNeighbours(cell: Cell): Set<Cell> {
         val i = cell.row
         val j = cell.column
         val set = mutableSetOf<Cell>()
@@ -140,7 +145,7 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
         if (j - 1 >= 0) set.add(Cell(i, j - 1))
         if (j + 1 < width) set.add(Cell(i, j + 1))
         return set
-    }*/
+    }
 }
 
 

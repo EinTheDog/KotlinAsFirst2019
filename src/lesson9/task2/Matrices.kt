@@ -5,6 +5,7 @@ package lesson9.task2
 import lesson9.task1.Matrix
 import lesson9.task1.MatrixImpl
 import lesson9.task1.createMatrix
+import lesson9.task1.createMatrixImpl
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -339,7 +340,7 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toSt
  * 3 10 11  8
  */
 fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
-    /*val mx = createMatrix(matrix.height, matrix.width, 0)
+    val mx = createMatrixImpl(matrix.height, matrix.width, 0)
     for (i in 0 until matrix.height) {
         for (j in 0 until matrix.width) {
             mx[i, j] = matrix[i, j]
@@ -353,8 +354,7 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
         mx.change(numCell, emptyCell!!)
         emptyCell = numCell
     }
-    return mx*/
-    TODO()
+    return mx
 }
 
 /**
