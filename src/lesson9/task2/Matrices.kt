@@ -2,10 +2,7 @@
 
 package lesson9.task2
 
-import lesson9.task1.Matrix
-import lesson9.task1.MatrixImpl
-import lesson9.task1.createMatrix
-import lesson9.task1.createMatrixImpl
+import lesson9.task1.*
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -75,7 +72,8 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     var next = -1
     if (i + dirs[k].first !in 0 until height
         || j + dirs[k].second !in 0 until width
-        || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
+        || mx[i + dirs[k].first, j + dirs[k].second] != 0
+    ) k = (k + 1) % 4
     if (height > 1 || width > 1) {
         i += dirs[k].first
         j += dirs[k].second
@@ -86,7 +84,8 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
         n++
         if (i + dirs[k].first !in 0 until height
             || j + dirs[k].second !in 0 until width
-            || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
+            || mx[i + dirs[k].first, j + dirs[k].second] != 0
+        ) k = (k + 1) % 4
         i += dirs[k].first
         j += dirs[k].second
         next = if (i in 0 until mx.height && j in 0 until mx.width) mx[i, j] else -1
@@ -120,7 +119,8 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     var next = -1
     if (i + dirs[k].first !in 0 until height
         || j + dirs[k].second !in 0 until width
-        || mx[i + dirs[k].first, j + dirs[k].second] != 0) k = (k + 1) % 4
+        || mx[i + dirs[k].first, j + dirs[k].second] != 0
+    ) k = (k + 1) % 4
     if (height > 1 || width > 1) {
         i += dirs[k].first
         j += dirs[k].second
@@ -130,7 +130,8 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
         mx[i, j] = n
         if (i + dirs[k].first !in 0 until height
             || j + dirs[k].second !in 0 until width
-            || mx[i + dirs[k].first, j + dirs[k].second] != 0) {
+            || mx[i + dirs[k].first, j + dirs[k].second] != 0
+        ) {
             k = (k + 1) % 4
             if (k == 0) n++
         }
@@ -213,7 +214,27 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    var ans = true
+    val digits = mutableSetOf<Int>()
+    for (i in 1..matrix.height) {
+        digits.add(i)
+    }
+    val row = mutableSetOf<Int>()
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) row.add(matrix[i, j])
+        ans = row == digits
+        if (!ans) return ans
+        row.clear()
+    }
+    for (i in 0 until matrix.height) {
+        for (j in 0 until matrix.width) row.add(matrix[j, i])
+        ans = row == digits
+        if (!ans) return ans
+        row.clear()
+    }
+    return ans
+}
 
 /**
  * Средняя
@@ -396,4 +417,20 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
  *
  * Перед решением этой задачи НЕОБХОДИМО решить предыдущую
  */
-fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> = TODO()
+fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> {
+   /* val graph = Graph()
+    val arr = Array(16) { 0 }
+    for (i in 0..15) arr[i] = i
+    val listOfCombs = mutableListOf<Array<Int>>()
+    fun swap(i: Int, j: Int) {
+        val a = arr[j]
+        arr[j] = arr[i]
+        arr[i] = a
+    }
+    while () {
+
+    }
+
+    return emptyList()*/
+    TODO()
+}
