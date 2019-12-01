@@ -336,7 +336,8 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     }
     val map = mutableMapOf<HexPoint, Set<Char>>()
     var center: HexPoint? = null
-    var r = 0
+    val potentialCenters = mutableSetOf<HexPoint>()
+    var r = maxD / 2 - 1
 
     fun pointsOnRadius(hex: HexPoint): Set<HexPoint> {
         val set = mutableSetOf<HexPoint>()
@@ -356,7 +357,7 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
 
     fun addHex(hex: HexPoint, from: Set<Char>) {
         map[hex] = (map[hex] ?: emptySet<Char>()) + from
-        if ((map[hex] ?: emptySet()).size == 3) center = hex
+        if ((map[hex] ?: emptySet()).size == 2) potentialCenters.add(hex)
     }
 
     addHex(a, setOf('a'))
@@ -365,15 +366,24 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
 
     while (center == null && r <= maxD + 1) {
         map.clear()
+        potentialCenters.clear()
         r++
         for (hex in pointsOnRadius(a)) {
             addHex(hex, setOf('a'))
         }
         for (hex in pointsOnRadius(b)) {
             addHex(hex, setOf('b'))
+            if (potentialCenters.size == 2) break
         }
-        for (hex in pointsOnRadius(c)) {
-            addHex(hex, setOf('c'))
+        for (hex in potentialCenters) {
+            val a = (Hexagon(hex, r).contains(c) && (c.x == hex.x - r || c.x == hex.x + r
+                    || c.y == hex.y - r || c.y == hex.y + r
+                    || c.x + c.y == hex.x + hex.y + r || c.x + c.y == hex.x + hex.y - r)
+                    )
+            if (Hexagon(hex, r).contains(c) && (c.x == hex.x - r || c.x == hex.x + r
+                || c.y == hex.y - r || c.y == hex.y + r
+                || c.x + c.y == hex.x + hex.y + r || c.x + c.y == hex.x + hex.y - r)
+            ) center = hex
         }
     }
 
